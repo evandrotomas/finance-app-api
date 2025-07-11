@@ -12,7 +12,8 @@
     "license": "ISC",
     "description": "",
     "devDependencies": {
-        "eslint": "^8.46.0"
+        "eslint": "^8.46.0",
+        "git-commit-msg-linter": "^5.0.8"
     },
     "dependencies": {
         "husky": "^8.0.3",
