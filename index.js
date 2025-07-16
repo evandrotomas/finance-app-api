@@ -12,6 +12,9 @@ import { PostgresCreateUserRepository } from './src/repositories/postgres/create
 import { CreateUserUseCase } from './src/use-cases/create-user.js'
 import { PostgresUpdateUserRepository } from './src/repositories/postgres/update-user.js'
 import { UpdateUserUseCase } from './src/use-cases/update-user.js'
+import { PostgresDeleteUserRepository } from './src/repositories/postgres/delete-user.js'
+import { DeleteUSerUseCase } from './src/use-cases/delete-user.js'
+import { PostgresGetUserByEmailRepository } from './src/repositories/postgres/get-user-by-email.js'
 
 const app = express()
 
@@ -30,9 +33,14 @@ app.get('/api/users/:userId', async (request, response) => {
 })
 
 app.post('/api/users', async (request, response) => {
+    const getUserByEmailRepository = new PostgresGetUserByEmailRepository()
+
     const createUserRepository = new PostgresCreateUserRepository()
 
-    const createUserUseCase = new CreateUserUseCase(createUserRepository)
+    const createUserUseCase = new CreateUserUseCase(
+        getUserByEmailRepository,
+        createUserRepository,
+    )
 
     const createUserController = new CreateUserController(createUserUseCase)
 
@@ -42,11 +50,9 @@ app.post('/api/users', async (request, response) => {
 })
 
 app.patch('/api/users/:userId', async (request, response) => {
-    const postgresUpdateUserRepository = new PostgresUpdateUserRepository()
+    const updateUserRepository = new PostgresUpdateUserRepository()
 
-    const updateUserUseCase = new UpdateUserUseCase(
-        postgresUpdateUserRepository,
-    )
+    const updateUserUseCase = new UpdateUserUseCase(updateUserRepository)
 
     const updateUserController = new UpdateUserController(updateUserUseCase)
 
@@ -56,7 +62,11 @@ app.patch('/api/users/:userId', async (request, response) => {
 })
 
 app.delete('/api/users/:userId', async (request, response) => {
-    const deleteUserController = new DeleteUserController()
+    const deleteUserRepository = new PostgresDeleteUserRepository()
+
+    const deleteUserUseCase = new DeleteUSerUseCase(deleteUserRepository)
+
+    const deleteUserController = new DeleteUserController(deleteUserUseCase)
 
     const { statusCode, body } = await deleteUserController.execute(request)
 
