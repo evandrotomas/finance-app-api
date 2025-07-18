@@ -7,7 +7,10 @@ import {
     makeGetUserByIdController,
     makeUpdateUserController,
 } from './src/factories/controllers/user.js'
-import { makeCreateTransactionController } from './src/factories/controllers/transaction.js'
+import {
+    makeCreateTransactionController,
+    makeGetTransactionByUserIdController,
+} from './src/factories/controllers/transaction.js'
 
 const app = express()
 
@@ -46,6 +49,14 @@ app.delete('/api/users/:userId', async (request, response) => {
 })
 
 // ------------------------------TRANSACTIONS--------------------------------------
+
+app.get('/api/transactions', async (request, response) => {
+    const getTransactionController = makeGetTransactionByUserIdController()
+
+    const { statusCode, body } = await getTransactionController.execute(request)
+
+    response.status(statusCode).send(body)
+})
 
 app.post('/api/transactions', async (request, response) => {
     const createTransactionController = makeCreateTransactionController()

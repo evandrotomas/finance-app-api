@@ -3,7 +3,7 @@ import {
     requiredFieldsIsMissingResponse,
     serverError,
     userNotFoundResponse,
-} from '../helpers.sj'
+} from '../helpers/index.js'
 import { ok } from '../helpers/http.js'
 import { checkIfIdIsValid, invalidIdResponse } from '../helpers/validation.js'
 
