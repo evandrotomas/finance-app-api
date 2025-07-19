@@ -27,20 +27,13 @@ export class UpdatetransactionController {
 
             const allowedFields = ['name', 'date', 'amount', 'type']
 
-            // validar a requisição (campos em branco)
-            for (const field of allowedFields) {
-                if (!params[field] || params[field].trim().length == 0) {
-                    return badRequest({ messaeg: `Missing param: ${field}` })
-                }
-            }
-
             const someFieldIsNotAllowed = Object.keys(params).some(
                 (field) => !allowedFields.includes(field),
             )
 
             if (someFieldIsNotAllowed) {
                 return badRequest({
-                    message: 'Some provided fields is not allowed',
+                    message: 'Some provided fields are not allowed',
                 })
             }
 
@@ -67,7 +60,7 @@ export class UpdatetransactionController {
 
             return ok(transaction)
         } catch (error) {
-            console.error(error)
+            console.error('Erro no UpdateTransactionController:', error)
             return serverError()
         }
     }
