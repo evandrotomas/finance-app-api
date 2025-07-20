@@ -15,9 +15,9 @@ export class DeleteUserController {
         try {
             const userId = httpRequest.params.userId
 
-            const isIsValid = checkIfIdIsValid(userId)
+            const idIsValid = checkIfIdIsValid(userId)
 
-            if (!isIsValid) {
+            if (!idIsValid) {
                 return invalidIdResponse()
             }
 
