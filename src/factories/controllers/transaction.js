@@ -2,6 +2,7 @@ import {
     PostgresCreateTransactionRepository,
     PostgresDeleteTransactionRepository,
     PostgresGetTransactionsByUserIdRepository,
+    PostgresGetUserBalanceRepository,
     PostgresGetUserByIdRepository,
     PostgresUpdateTransactionRepository,
 } from '../../repositories/postgres/index.js'
@@ -10,6 +11,7 @@ import {
     CreateTransactionUseCase,
     DeleteTransactionUseCase,
     GetTransactionByUserIdUseCase,
+    GetUserBalanceUseCase,
     UpdateTransactionUseCase,
 } from '../../use-cases/index.js'
 
@@ -17,6 +19,7 @@ import {
     CreateTransactionController,
     DeleteTransactionController,
     GetTransactionByUserIdController,
+    GetUserBalanceController,
     UpdatetransactionController,
 } from '../../controllers/index.js'
 
@@ -80,4 +83,21 @@ export const makeDeleteTransactionController = () => {
     )
 
     return deleteTransactionController
+}
+
+export const makeGetUserBalanceController = () => {
+    const getUserBalanceRepository = new PostgresGetUserBalanceRepository()
+
+    const getUserByIdRepository = new PostgresGetUserByIdRepository()
+
+    const getUserBalanceUseCase = new GetUserBalanceUseCase(
+        getUserBalanceRepository,
+        getUserByIdRepository,
+    )
+
+    const getUserBalanceControler = new GetUserBalanceController(
+        getUserBalanceUseCase,
+    )
+
+    return getUserBalanceControler
 }
