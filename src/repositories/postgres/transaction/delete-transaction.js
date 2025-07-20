@@ -4,7 +4,7 @@ export class PostgresDeleteTransactionRepository {
     async execute(transactionId) {
         const deleteTransaction = await PostgresHelper.query(
             `
-        DELETE from transaction
+        DELETE from transactions
         WHERE id = $1
         RETURNING *
         `,
