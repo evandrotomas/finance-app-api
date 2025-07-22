@@ -9,7 +9,7 @@ export class CreateUserUseCase {
         this.getUserByEmailRepository = getUserByEmailRepository
     }
 
-    async excute(createUserParams) {
+    async execute(createUserParams) {
         const userWithProvidedEmail =
             await this.getUserByEmailRepository.execute(createUserParams.email)
 
