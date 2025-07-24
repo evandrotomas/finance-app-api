@@ -29,7 +29,7 @@ describe('DeleteUserController', () => {
         },
     }
 
-    it('should returns 200 if user is delete', async () => {
+    it('should return 200 if user is delete', async () => {
         // arrange
         const { sut } = makeSut()
 
@@ -40,7 +40,7 @@ describe('DeleteUserController', () => {
         expect(result.statusCode).toBe(200)
     })
 
-    it('should returns 400 if id is invalid', async () => {
+    it('should return 400 if id is invalid', async () => {
         // arrange
         const { sut } = makeSut()
 
@@ -56,7 +56,7 @@ describe('DeleteUserController', () => {
         expect(result.statusCode).toBe(400)
     })
 
-    it('should returns 404 if user is not found', async () => {
+    it('should return 404 if user is not found', async () => {
         // arrenge
         const { sut, deleteUserUseCase } = makeSut()
         jest.spyOn(deleteUserUseCase, 'execute').mockReturnValueOnce(null)
@@ -66,5 +66,19 @@ describe('DeleteUserController', () => {
 
         // assert
         expect(result.statusCode).toBe(404)
+    })
+
+    it('should retun 500 if DeleteUserCase throws', async () => {
+        // arrange
+        const { sut, deleteUserUseCase } = makeSut()
+        jest.spyOn(deleteUserUseCase, 'execute').mockImplementationOnce(() => {
+            throw new Error()
+        })
+
+        // act
+        const result = await sut.execute(httpRequest)
+
+        // assert
+        expect(result.statusCode).toBe(500)
     })
 })
