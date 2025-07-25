@@ -28,7 +28,7 @@ export class GetUserBalanceController {
 
             return ok(balance)
         } catch (error) {
-            if (error instanceof UserNotFoundError()) {
+            if (error instanceof UserNotFoundError) {
                 return userNotFoundResponse()
             }
 
