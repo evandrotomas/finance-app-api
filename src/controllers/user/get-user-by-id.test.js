@@ -50,4 +50,16 @@ describe('GetUserByIdController', () => {
         // assert
         expect(result.statusCode).toBe(400)
     })
+
+    it('should return 404 if a user is not found', async () => {
+        // arrange
+        const { sut, getUserByIdUseCase } = makeSut()
+        jest.spyOn(getUserByIdUseCase, 'execute').mockResolvedValue(null)
+
+        // act
+        const result = await sut.execute(httpRequest)
+
+        // assert
+        expect(result.statusCode).toBe(404)
+    })
 })
