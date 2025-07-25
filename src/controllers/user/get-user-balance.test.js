@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { GetUserBalanceController } from './get-user-balance'
+import { GetUserBalanceController } from './get-user-balance.js'
 
 describe('GetUserBalanceController', () => {
     class GetUserBalanceUseCaseStub {
@@ -30,5 +30,17 @@ describe('GetUserBalanceController', () => {
 
         // assert
         expect(result.statusCode).toBe(200)
+    })
+
+    it('should return 400 when userId is invalid', async () => {
+        // arrange
+        const { sut } = makeSut()
+
+        // act
+
+        const result = await sut.execute({ params: { userId: 'invalid_id' } })
+
+        // assert
+        expect(result.statusCode).toBe(400)
     })
 })
