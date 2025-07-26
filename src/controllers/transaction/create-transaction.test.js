@@ -24,12 +24,28 @@ describe('CreateTransactionController', () => {
         },
     }
 
-    it('should return 201 when creating a transaction successfully', async () => {
+    it('should return 201 when creating a transaction successfully (expense)', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
         const result = await sut.execute(httpRequest)
+
+        // assert
+        expect(result.statusCode).toBe(201)
+    })
+
+    it('should return 201 when creating a transaction successfully (earning)', async () => {
+        // arrange
+        const { sut } = makeSut()
+
+        // act
+        const result = await sut.execute({
+            body: {
+                ...httpRequest.body,
+                type: 'EARNING',
+            },
+        })
 
         // assert
         expect(result.statusCode).toBe(201)
@@ -57,7 +73,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 name: '',
             },
@@ -73,7 +89,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 date: '',
             },
@@ -89,7 +105,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 amount: '',
             },
@@ -105,7 +121,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 type: '',
             },
@@ -121,7 +137,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 date: 'invalid_date',
             },
@@ -137,7 +153,7 @@ describe('CreateTransactionController', () => {
 
         // act
         const result = await sut.execute({
-            httpRequest: {
+            body: {
                 ...httpRequest.body,
                 type: 'invalid_type',
             },
