@@ -18,7 +18,7 @@ import {
 import {
     CreateTransactionController,
     DeleteTransactionController,
-    GetTransactionByUserIdController,
+    GetTransactionsByUserIdController,
     GetUserBalanceController,
     UpdatetransactionController,
 } from '../../controllers/index.js'
@@ -41,7 +41,7 @@ export const makeCreateTransactionController = () => {
     return createTransactionController
 }
 
-export const makeGetTransactionByUserIdController = () => {
+export const makeGetTransactionsByUserIdController = () => {
     const getTransactionsByUserIdRepository =
         new PostgresGetTransactionsByUserIdRepository() // <- nome 100% igual ao da classe
 
@@ -52,7 +52,7 @@ export const makeGetTransactionByUserIdController = () => {
         getUserByIdRepository,
     )
 
-    return new GetTransactionByUserIdController(getTransactionsByUserIdUseCase)
+    return new GetTransactionsByUserIdController(getTransactionsByUserIdUseCase)
 }
 
 export const makeUpdateTransactionCotroller = () => {
