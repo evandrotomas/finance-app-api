@@ -6,3 +6,6 @@ node_modules
 
 # Postgres volume
 .env
+
+# Tests
+coverage
