@@ -32,7 +32,6 @@ export class UpdateUserUseCase {
         if (updateUserParams.password) {
             const hashedPassword = await this.passwordHasherAdapter.execute(
                 updateUserParams.password,
-                10,
             )
 
             user.password = hashedPassword
