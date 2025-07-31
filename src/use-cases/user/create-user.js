@@ -7,8 +7,8 @@ export class CreateUserUseCase {
         passwordHasherAdapter,
         idGeneratorAdapter,
     ) {
-        this.createUserRepository = createUserRepository
         this.getUserByEmailRepository = getUserByEmailRepository
+        this.createUserRepository = createUserRepository
         this.passwordHasherAdapter = passwordHasherAdapter
         this.idGeneratorAdapter = idGeneratorAdapter
     }
