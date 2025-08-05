@@ -104,4 +104,18 @@ describe('Create User Use Case', () => {
             id: 'generated_id',
         })
     })
+
+    it('shoud thorws if GetUserByEmailRepository', async () => {
+        // arrange
+        const { sut, getUserByEmailRepository } = makeSut()
+        jest.spyOn(getUserByEmailRepository, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        // act
+        const promisse = sut.execute(user)
+
+        // assert
+        await expect(promisse).rejects.toThrow()
+    })
 })
