@@ -75,4 +75,17 @@ describe('GetUserBalanceUserCase', () => {
         // assert
         expect(spy).toHaveBeenCalledWith(userId)
     })
+
+    it('should call GetUserBalanceRepository with correct params', async () => {
+        // arrange
+        const { sut, getUserBalanceRepository } = makeSut()
+        const userId = faker.string.uuid()
+        const spy = jest.spyOn(getUserBalanceRepository, 'execute')
+
+        // act
+        await sut.execute(userId)
+
+        // assert
+        expect(spy).toHaveBeenCalledWith(userId)
+    })
 })
