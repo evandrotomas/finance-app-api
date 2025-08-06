@@ -1,4 +1,4 @@
-export class DeleteUSerUseCase {
+export class DeleteUserUseCase {
     constructor(deleteUserRepository) {
         this.deleteUserRepository = deleteUserRepository
     }
