@@ -4,11 +4,11 @@ export class CreateTransactionUseCase {
     constructor(
         createTransactionRepository,
         getUserByIdRepository,
-        idGeneratorAdapater,
+        idGeneratorAdapter,
     ) {
         this.createTransactionRepository = createTransactionRepository
         this.getUserByIdRepository = getUserByIdRepository
-        this.idGeneratorAdapater = idGeneratorAdapater
+        this.idGeneratorAdapter = idGeneratorAdapter
     }
 
     async execute(createTransactionParams) {
@@ -23,7 +23,7 @@ export class CreateTransactionUseCase {
         }
 
         // se existir, criar a ID da transação
-        const transactionId = this.idGeneratorAdapater.execute()
+        const transactionId = await this.idGeneratorAdapter.execute()
 
         // criar a transação
         const transaction = await this.createTransactionRepository.execute({
