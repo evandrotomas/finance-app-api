@@ -17,7 +17,7 @@ describe('UpdateUserUseCase', () => {
     }
 
     class PasswordHasherAdapterStub {
-        async excute() {
+        async execute() {
             return 'hashed_password'
         }
     }
@@ -52,8 +52,8 @@ describe('UpdateUserUseCase', () => {
 
         // act
         const result = await sut.execute(faker.string.uuid(), {
-            first_name: faker.person.firstName,
-            last_name: faker.person.lastName,
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
         })
 
         // assert
@@ -82,7 +82,19 @@ describe('UpdateUserUseCase', () => {
 
     it('should update user successfully (with password)', async () => {
         // arrange
+        const { sut, passwordHasherAdapter } = makeSut()
+        const passwordHasherAdapterSpy = jest.spyOn(
+            passwordHasherAdapter,
+            'execute',
+        )
+        const password = faker.internet.password()
+
         // act
+        const result = await sut.execute(faker.string.uuid(), {
+            password,
+        })
         // assert
+        expect(passwordHasherAdapterSpy).toHaveBeenCalledWith(password)
+        expect(result).toBe(user)
     })
 })
