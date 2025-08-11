@@ -26,4 +26,14 @@ describe('PostgresGetUserByIdRepository', () => {
             },
         })
     })
+
+    it('should throw if Prisma throws', async () => {
+        const sut = new PostgresGetUserByIdRepository()
+
+        jest.spyOn(prisma.user, 'findUnique').mockRejectedValueOnce(new Error())
+
+        const promisse = sut.execute(fakerUser.id)
+
+        await expect(promisse).rejects.toThrow()
+    })
 })
