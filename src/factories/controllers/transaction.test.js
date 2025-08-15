@@ -13,7 +13,7 @@ import {
     makeUpdateTransactionController,
 } from './transaction'
 
-describe('TransactionControllerFactoies', () => {
+describe('TransactionControllerFactories', () => {
     it('should return a valid CreateTransactionController instance', async () => {
         expect(makeCreateTransactionController()).toBeInstanceOf(
             CreateTransactionController,
