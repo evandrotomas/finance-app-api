@@ -12,7 +12,7 @@ import {
     makeDeleteTransactionController,
     makeGetTransactionsByUserIdController,
     makeGetUserBalanceController,
-    makeUpdateTransactionCotroller,
+    makeUpdateTransactionController,
 } from './src/factories/controllers/transaction.js'
 
 const app = express()
@@ -79,7 +79,7 @@ app.post('/api/transactions', async (request, response) => {
 })
 
 app.patch('/api/transactions/:transactionId', async (request, response) => {
-    const updateTransactionController = makeUpdateTransactionCotroller()
+    const updateTransactionController = makeUpdateTransactionController()
 
     const { statusCode, body } =
         await updateTransactionController.execute(request)
