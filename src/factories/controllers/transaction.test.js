@@ -1,11 +1,13 @@
 import {
     CreateTransactionController,
     DeleteTransactionController,
+    GetTransactionsByUserIdController,
     UpdatetransactionController,
 } from '../../controllers'
 import {
     makeCreateTransactionController,
     makeDeleteTransactionController,
+    makeGetTransactionsByUserIdController,
     makeUpdateTransactionController,
 } from './transaction'
 
@@ -25,6 +27,12 @@ describe('TransactionControllerFactoies', () => {
     it('should return a valid DeleteTransactionController instance', async () => {
         expect(makeDeleteTransactionController()).toBeInstanceOf(
             DeleteTransactionController,
+        )
+    })
+
+    it('should return a valid makeGetTransactionsByUserIdController instance', async () => {
+        expect(makeGetTransactionsByUserIdController()).toBeInstanceOf(
+            GetTransactionsByUserIdController,
         )
     })
 })
