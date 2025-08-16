@@ -5,6 +5,12 @@ import { UserNotFoundError } from '../../../errors/index.js'
 export class PostgresDeleteUserRepository {
     async execute(userId) {
         try {
+            const user = await prisma.user.findUnique({ where: { id: userId } })
+
+            if (!user) {
+                throw new UserNotFoundError(userId)
+            }
+
             return await prisma.user.delete({
                 where: {
                     id: userId,
@@ -17,7 +23,7 @@ export class PostgresDeleteUserRepository {
                     throw new UserNotFoundError(userId)
                 }
             }
-            throw Error()
+            throw error
         }
     }
 }
