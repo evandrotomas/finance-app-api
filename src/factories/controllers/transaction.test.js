@@ -9,9 +9,9 @@ import {
     makeCreateTransactionController,
     makeDeleteTransactionController,
     makeGetTransactionsByUserIdController,
-    makeGetUserBalanceController,
     makeUpdateTransactionController,
 } from './transaction'
+import { makeGetUserBalanceController } from './user'
 
 describe('TransactionControllerFactories', () => {
     it('should return a valid CreateTransactionController instance', async () => {
