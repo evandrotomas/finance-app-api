@@ -4,6 +4,7 @@ import {
     PostgresGetUserByEmailRepository,
     PostgresGetUserByIdRepository,
     PostgresUpdateUserRepository,
+    PostgresGetUserBalanceRepository,
 } from '../../repositories/postgres/index.js'
 
 import {
@@ -11,6 +12,7 @@ import {
     DeleteUserUseCase,
     GetUserByIdUseCase,
     UpdateUserUseCase,
+    GetUserBalanceUseCase,
 } from '../../use-cases/index.js'
 
 import {
@@ -18,6 +20,7 @@ import {
     DeleteUserController,
     GetUserByIdController,
     UpdateUserController,
+    GetUserBalanceController,
 } from '../../controllers/index.js'
 
 import {
@@ -76,4 +79,21 @@ export const makeDeleteUserController = () => {
     const deleteUserController = new DeleteUserController(deleteUserUseCase)
 
     return deleteUserController
+}
+
+export const makeGetUserBalanceController = () => {
+    const getUserBalanceRepository = new PostgresGetUserBalanceRepository()
+
+    const getUserByIdRepository = new PostgresGetUserByIdRepository()
+
+    const getUserBalanceUseCase = new GetUserBalanceUseCase(
+        getUserBalanceRepository,
+        getUserByIdRepository,
+    )
+
+    const getUserBalanceControler = new GetUserBalanceController(
+        getUserBalanceUseCase,
+    )
+
+    return getUserBalanceControler
 }
