@@ -1,0 +1,8 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Finance App Api",
+        "description": "API Finance App that allows users to manage their finaces",
+        "version": "1.0.0"
+    }
+}
