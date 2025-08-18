@@ -4,5 +4,82 @@
         "title": "Finance App Api",
         "description": "API Finance App that allows users to manage their finaces",
         "version": "1.0.0"
+    },
+    "paths": {
+        "/api/users": {
+            "post": {
+                "sunmary": "Create a new user",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User Created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid params"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CreateUserParams": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string",
+                    "example": "Antônio"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Belchior"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "belchior@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "e29ef739-ffae-45a8-a582-fb56f9668a12"
+                },
+                "first_name": {
+                    "type": "string",
+                    "example": "Antônio"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Belchior"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "belchior@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                }
+            }
+        }
     }
 }
