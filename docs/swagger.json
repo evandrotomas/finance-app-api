@@ -299,7 +299,40 @@
                         }
                     },
                     "404": {
-                        "description": "Invalid params",
+                        "description": "Transaction not found",
+                        "schema": {
+                            "$ref": "#/definitions/TransactionNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "sunmary": "Delete transaction by ID",
+                "tags": ["Transaction"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "transactionId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the transactions to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction deleted successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    },
+                    "404": {
+                        "description": "transaction not found",
                         "schema": {
                             "$ref": "#/definitions/TransactionNotFoundResponse"
                         }
@@ -366,19 +399,23 @@
             "properties": {
                 "first_name": {
                     "type": "string",
-                    "example": "Antônio"
+                    "example": "Antônio",
+                    "required": true
                 },
                 "last_name": {
                     "type": "string",
-                    "example": "Belchior"
+                    "example": "Belchior",
+                    "required": true
                 },
                 "email": {
                     "type": "string",
-                    "example": "belchior@gmail.com"
+                    "example": "belchior@gmail.com",
+                    "required": true
                 },
                 "password": {
                     "type": "string",
-                    "example": "password"
+                    "example": "password",
+                    "required": true
                 }
             }
         },
@@ -422,25 +459,30 @@
             "properties": {
                 "user_id": {
                     "type": "string",
-                    "example": "74caf120-cc49-497d-92f6-1059d14ee60b"
+                    "example": "74caf120-cc49-497d-92f6-1059d14ee60b",
+                    "required": true
                 },
                 "name": {
                     "type": "string",
-                    "example": "Salary"
+                    "example": "Salary",
+                    "required": true
                 },
                 "type": {
                     "type": "string",
                     "example": "EARNING",
-                    "description": "EARNING, EXPENSE, INVESTMENT"
+                    "description": "EARNING, EXPENSE, INVESTMENT",
+                    "required": true
                 },
                 "date": {
                     "type": "string",
-                    "example": "2025-07-22T12:15:00Z"
+                    "example": "2025-07-22T12:15:00Z",
+                    "required": true
                 },
 
                 "amount": {
                     "type": "number",
-                    "example": "1000"
+                    "example": "1000",
+                    "required": true
                 }
             }
         },
