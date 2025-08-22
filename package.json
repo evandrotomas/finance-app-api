@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "dotenv -e .env.test -- jest --passWithNoTests --silent --runInBand",
+    "test": "dotenv -e .env.test -- node --experimental-vm-modules node_modules/jest/bin/jest.js --passWithNoTests --silent --runInBand --detectOpenHandles --forceExit",
     "test:watch": "npm run test -- --watch",
     "test:coverage": "npm run test -- --coverage",
     "postinstall": "npx husky@8.0.3 install && npx prisma generate",
@@ -21,7 +21,7 @@
     "@babel/preset-env": "^7.28.0",
     "@faker-js/faker": "^9.9.0",
     "@types/jest": "^30.0.0",
-    "babel-jest": "^30.0.5",
+    "babel-jest": "^  30.0.5",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^10.1.5",
     "git-commit-msg-linter": "^5.0.8",

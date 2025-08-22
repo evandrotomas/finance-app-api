@@ -52,9 +52,9 @@ describe('DeleteTransactionController', () => {
     it('should returns 404 when transaction is not found', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()
-        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new TransactionNotFoundError(),
-        )
+        import.meta.jest
+            .spyOn(deleteTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(new TransactionNotFoundError())
 
         // act
         const result = await sut.execute(httpRequest)
@@ -66,9 +66,9 @@ describe('DeleteTransactionController', () => {
     it('should returns 500 when DeleteTransacrionUseCase throws', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()
-        jest.spyOn(deleteTransactionUseCase, 'execute').mockRejectedValueOnce(
-            new Error(),
-        )
+        import.meta.jest
+            .spyOn(deleteTransactionUseCase, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         // act
         const result = await sut.execute(httpRequest)
@@ -80,7 +80,10 @@ describe('DeleteTransactionController', () => {
     it('should call DeleteTransactionUseCase with correct params', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()
-        const executeSpy = jest.spyOn(deleteTransactionUseCase, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            deleteTransactionUseCase,
+            'execute',
+        )
 
         const transactionId = faker.string.uuid()
 
