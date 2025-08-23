@@ -10,7 +10,7 @@
     "postinstall": "npx husky@8.0.3 install && npx prisma generate",
     "start:dev": "node --watch index.js",
     "start": "node index.js",
-    "eslint:check": "eslint src --ext .js",
+    "eslint:check": "eslint src",
     "prettier:check": "prettier --check src"
   },
   "keywords": [],
@@ -20,10 +20,13 @@
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",
     "@types/jest": "^30.0.0",
-    "eslint": "^8.46.0",
+    "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.5",
     "git-commit-msg-linter": "^5.0.8",
+    "globals": "^16.3.0",
+    "husky": "^8.0.3",
     "jest": "^30.0.5",
+    "lint-staged": "^13.2.3",
     "prettier": "^3.6.2",
     "prisma": "^6.12.0",
     "supertest": "^7.1.4"
@@ -35,8 +38,6 @@
     "dotenv": "^17.2.0",
     "dotenv-cli": "^10.0.0",
     "express": "^5.1.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.3",
     "pg": "^8.16.3",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
