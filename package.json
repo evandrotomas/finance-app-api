@@ -9,6 +9,7 @@
     "test:coverage": "npm run test -- --coverage",
     "postinstall": "npx husky@8.0.3 install && npx prisma generate",
     "start:dev": "node --watch index.js",
+    "start": "node index.js",
     "eslint:check": "eslint src --ext .js",
     "prettier:check": "prettier --check src"
   },
