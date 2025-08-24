@@ -7,7 +7,7 @@ import {
     serverError,
     unauthorized,
 } from '../helpers/index.js'
-import { InvalidPasswordError, UserNotFoundError } from '../../errors'
+import { InvalidPasswordError, UserNotFoundError } from '../../errors/index.js'
 
 export class LoginUserController {
     constructor(loginUseUserCase) {
