@@ -31,13 +31,16 @@ describe('Transaction Routes E2E Tests', () => {
                 id: undefined,
             })
 
+        const from = '2025-01-01'
+        const to = '2025-01-31'
+
         const { body: createdTransaction } = await request(app)
             .post('/api/transactions')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
             .send({ ...transaction, user_id: createdUser.id, id: undefined })
 
         const response = await request(app)
-            .get(`/api/transactions`)
+            .get(`/api/transactions?from=${from}&to=${to}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
         expect(response.status).toBe(200)

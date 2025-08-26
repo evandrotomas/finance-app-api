@@ -4,6 +4,9 @@ import { UserNotFoundError } from '../../errors/user'
 import { transaction } from '../../tests'
 
 describe('GetTransactionByUserIdController', () => {
+    const from = '2025-01-01'
+    const to = '2025-01-31'
+
     class GetUserByIdUseCaseStub {
         async execute() {
             return transaction
@@ -17,18 +20,14 @@ describe('GetTransactionByUserIdController', () => {
         return { sut, getUserByIdUseCase }
     }
 
-    const httpRequest = {
-        query: {
-            userId: faker.string.uuid(),
-        },
-    }
-
     it('should return 200 when finding transaction by user id successfully', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute({
+            query: { userId: faker.string.uuid(), from, to },
+        })
 
         // assert
         expect(result.statusCode).toBe(200)
@@ -42,6 +41,8 @@ describe('GetTransactionByUserIdController', () => {
         const result = await sut.execute({
             query: {
                 userId: undefined,
+                from,
+                to,
             },
         })
 
@@ -57,6 +58,8 @@ describe('GetTransactionByUserIdController', () => {
         const result = await sut.execute({
             query: {
                 userId: 'invalid_id',
+                from,
+                to,
             },
         })
 
@@ -72,7 +75,9 @@ describe('GetTransactionByUserIdController', () => {
             .mockRejectedValueOnce(new UserNotFoundError())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute({
+            query: { userId: faker.string.uuid(), from, to },
+        })
 
         // assert
         expect(result.statusCode).toBe(404)
@@ -86,7 +91,9 @@ describe('GetTransactionByUserIdController', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute({
+            query: { userId: faker.string.uuid(), from, to },
+        })
 
         // assert
         expect(result.statusCode).toBe(500)
@@ -102,6 +109,8 @@ describe('GetTransactionByUserIdController', () => {
         await sut.execute({
             query: {
                 userId,
+                from,
+                to,
             },
         })
 
