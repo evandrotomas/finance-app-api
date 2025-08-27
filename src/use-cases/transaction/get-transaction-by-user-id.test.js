@@ -4,7 +4,7 @@ import { UserNotFoundError } from '../../errors/user'
 import { user } from '../../tests'
 
 describe('GetTransactionByUserIdUseCase', () => {
-    const userId = faker.string.sut
+    const userId = faker.string.uuid()
 
     class GetUserByIdRepositoryStub {
         async execute() {
@@ -77,13 +77,17 @@ describe('GetTransactionByUserIdUseCase', () => {
             getTransactionsByUserIdRepository,
             'execute',
         )
+        const from = '2025-01-01'
+        const to = '2025-12-31'
 
         // act
-        await sut.execute(userId)
+        await sut.execute(userId, from, to)
 
         // assert
         expect(getTransactionsByUserIdRepositorySpy).toHaveBeenCalledWith(
             userId,
+            from,
+            to,
         )
     })
 
