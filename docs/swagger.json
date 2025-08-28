@@ -273,7 +273,7 @@
       }
     },
 
-    "/api/transactions": {
+    "/api/transactions/me": {
       "get": {
         "sunmary": "Get authenticated user transaction",
         "tags": ["Transaction"],
@@ -376,9 +376,9 @@
         ]
       }
     },
-    "/api/transactions/{transactionId}": {
+    "/api/transactions/me/{transactionId}": {
       "patch": {
-        "sunmary": "Update transaction by user ID",
+        "sunmary": "Update transaction by ID of the authenticated user",
         "tags": ["Transaction"],
         "parameters": [
           {
@@ -424,7 +424,7 @@
         ]
       },
       "delete": {
-        "sunmary": "Delete transaction by ID",
+        "sunmary": "Delete transaction ID of the authenticated user",
         "tags": ["Transaction"],
         "parameters": [
           {
