@@ -24,7 +24,10 @@ export class DeleteTransactionController {
             }
 
             const deleteTransaction =
-                await this.deleteTransactionUserCase.execute(transactionId)
+                await this.deleteTransactionUserCase.execute(
+                    httpRequest.params.transactionId,
+                    httpRequest.params.user_id,
+                )
 
             return ok(deleteTransaction)
         } catch (error) {
