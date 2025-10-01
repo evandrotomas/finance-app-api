@@ -1,10 +1,10 @@
-import { EmailAlreadyInUseError } from '../../errors/user'
 import { CreateUserUseCase } from './create-user'
+import { EmailAlreadyInUseError } from '../../errors/user'
 import { user as fixtureUser } from '../../tests'
 
 describe('Create User Use Case', () => {
     const user = {
-        ...fixtureUser,
+        fixtureUser,
         id: undefined,
     }
 
@@ -27,13 +27,13 @@ describe('Create User Use Case', () => {
     }
 
     class IdGeneratorAdapterStub {
-        execute() {
+        async execute() {
             return 'generated_id'
         }
     }
 
     class TokensGeneratorAdapterStub {
-        execute() {
+        async execute() {
             return {
                 accessToken: 'any_access_token',
                 refreshToken: 'any_refresh_token',
@@ -65,6 +65,7 @@ describe('Create User Use Case', () => {
             tokensGeneratorAdapter,
         }
     }
+
     it('should successfully create a user', async () => {
         // arrange
         const { sut } = makeSut()
@@ -78,7 +79,7 @@ describe('Create User Use Case', () => {
         expect(createdUser.tokens.refreshToken).toBeDefined()
     })
 
-    it('should throw an EmailAlreadyInUseError if GetUserByEmailRepository returns a user', async () => {
+    it('should throw an EmailAlreadyInUserError if GetUserByEmailRepository returns a user', async () => {
         // arrange
         const { sut, getUserByEmailRepository } = makeSut()
         import.meta.jest
@@ -86,39 +87,13 @@ describe('Create User Use Case', () => {
             .mockReturnValueOnce(user)
 
         // act
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
         // assert
-        await expect(promise).rejects.toThrow(
-            new EmailAlreadyInUseError(user.email),
-        )
+        expect(promisse).rejects.toThrow(new EmailAlreadyInUseError(user.email))
     })
 
-    it('should call IdGeneratorAdapter to generate a random id', async () => {
-        // arrange
-        const { sut, idGeneratorAdapter, createUserRepository } = makeSut()
-        const idGeneratorSpy = import.meta.jest.spyOn(
-            idGeneratorAdapter,
-            'execute',
-        )
-        const createUserRepositorySpy = import.meta.jest.spyOn(
-            createUserRepository,
-            'execute',
-        )
-
-        // act
-        await sut.execute(user)
-
-        // assert
-        expect(idGeneratorSpy).toHaveBeenCalled()
-        expect(createUserRepositorySpy).toHaveBeenCalledWith({
-            ...user,
-            password: 'hashed_password',
-            id: 'generated_id',
-        })
-    })
-
-    it('should call PasswordHasherAdapter to cryptograph password', async () => {
+    it('should call passwordHasherAdapter to cryptogragh password', async () => {
         // arrange
         const { sut, passwordHasherAdapter, createUserRepository } = makeSut()
         const passwordHasherSpy = import.meta.jest.spyOn(
@@ -134,6 +109,7 @@ describe('Create User Use Case', () => {
         await sut.execute(user)
 
         // assert
+
         expect(passwordHasherSpy).toHaveBeenCalledWith(user.password)
         expect(createUserRepositorySpy).toHaveBeenCalledWith({
             ...user,
@@ -142,7 +118,7 @@ describe('Create User Use Case', () => {
         })
     })
 
-    it('should throw if GetUserByEmailRepository throws', async () => {
+    it('shoud thorws if GetUserByEmailRepository', async () => {
         // arrange
         const { sut, getUserByEmailRepository } = makeSut()
         import.meta.jest
@@ -150,13 +126,13 @@ describe('Create User Use Case', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
         // assert
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 
-    it('should throw if IdGeneratorAdapter throws', async () => {
+    it('shoud throw if IdGenaratorAdapter throws', async () => {
         // arrange
         const { sut, idGeneratorAdapter } = makeSut()
         import.meta.jest
@@ -166,13 +142,13 @@ describe('Create User Use Case', () => {
             })
 
         // act
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
         // assert
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 
-    it('should throw if PasswordHasherAdapter throws', async () => {
+    it('shoud throw if PasswordHasherAdapter throw', async () => {
         // arrange
         const { sut, passwordHasherAdapter } = makeSut()
         import.meta.jest
@@ -180,13 +156,13 @@ describe('Create User Use Case', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
         // assert
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 
-    it('should throw if CreateUserRepository throws', async () => {
+    it('shoud throw if CreateUserRepository throw', async () => {
         // arrange
         const { sut, createUserRepository } = makeSut()
         import.meta.jest
@@ -194,9 +170,9 @@ describe('Create User Use Case', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
         // assert
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 })

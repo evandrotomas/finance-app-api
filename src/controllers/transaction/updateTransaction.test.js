@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { UpdatetransactionController } from './update-transaction'
+import { UpdateTransactionController } from './update-transaction'
 import { transaction } from '../../tests'
 import { TransactionNotFoundError } from '../../errors'
 
@@ -12,7 +12,7 @@ describe('UpdateTransactionController', () => {
 
     const makeSut = () => {
         const updateTransactionUseCase = new UpdateTransactionUseCaseStub()
-        const sut = new UpdatetransactionController(updateTransactionUseCase)
+        const sut = new UpdateTransactionController(updateTransactionUseCase)
 
         return { sut, updateTransactionUseCase }
     }

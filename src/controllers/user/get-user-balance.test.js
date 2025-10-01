@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { GetUserBalanceController } from './get-user-balance'
-import { UserNotFoundError } from '../../errors/user'
+import { GetUserBalanceController } from './get-user-balance.js'
+import { UserNotFoundError } from '../../errors/user.js'
 
 describe('GetUserBalanceController', () => {
     class GetUserBalanceUseCaseStub {
@@ -21,8 +21,8 @@ describe('GetUserBalanceController', () => {
             userId: faker.string.uuid(),
         },
         query: {
-            from: '2024-01-01',
-            to: '2024-01-31',
+            from: '2025-01-01',
+            to: '2025-01-31',
         },
     }
 
@@ -42,16 +42,20 @@ describe('GetUserBalanceController', () => {
         const { sut } = makeSut()
 
         // act
+
         const result = await sut.execute({
             params: { userId: 'invalid_id' },
-            query: { from: '2024-01-01', to: '2024-01-31' },
+            query: {
+                from: ' 2025-01-01',
+                to: '2025-01-31',
+            },
         })
 
         // assert
         expect(result.statusCode).toBe(400)
     })
 
-    it('should return 500 if GetUserBalanceUseCase throws', async () => {
+    it('should return 500 if GetUserBalanceController throws', async () => {
         // arrange
         const { sut, getUserBalanceUseCase } = makeSut()
         import.meta.jest
@@ -65,7 +69,7 @@ describe('GetUserBalanceController', () => {
         expect(result.statusCode).toBe(500)
     })
 
-    it('should call GetUserBalanceUseCase with correct params', async () => {
+    it('should call GetBalanceUseCase with correct params', async () => {
         // arrange
         const { sut, getUserBalanceUseCase } = makeSut()
         const executeSpy = import.meta.jest.spyOn(
@@ -92,9 +96,9 @@ describe('GetUserBalanceController', () => {
             .mockRejectedValueOnce(new UserNotFoundError())
 
         // act
-        const response = await sut.execute(httpRequest)
+        const result = await sut.execute(httpRequest)
 
         // assert
-        expect(response.statusCode).toBe(404)
+        expect(result.statusCode).toBe(404)
     })
 })

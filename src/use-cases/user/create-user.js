@@ -23,23 +23,30 @@ export class CreateUserUseCase {
             throw new EmailAlreadyInUseError(createUserParams.email)
         }
 
-        const userId = this.idGeneratorAdapter.execute()
+        // Gerar ID do usuário
+        const userId = await this.idGeneratorAdapter.execute()
 
+        // criptografar a senha
         const hashedPassword = await this.passwordHasherAdapter.execute(
             createUserParams.password,
         )
 
+        // Montar o usuário para inserção
         const user = {
             ...createUserParams,
             id: userId,
             password: hashedPassword,
         }
 
+        // Inserir o usuário no banco
         const createdUser = await this.createUserRepository.execute(user)
+
+        // Gerar tokens
+        const tokens = await this.tokensGeneratorAdapter.execute(userId)
 
         return {
             ...createdUser,
-            tokens: this.tokensGeneratorAdapter.execute(userId),
+            tokens,
         }
     }
 }

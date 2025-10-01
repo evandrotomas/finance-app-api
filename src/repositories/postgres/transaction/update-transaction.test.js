@@ -1,10 +1,10 @@
-import { faker } from '@faker-js/faker'
-import dayjs from 'dayjs'
-import { TransactionType } from '@prisma/client'
 import { prisma } from '../../../../prisma/prisma'
-import { transaction, user } from '../../../tests'
 import { PostgresUpdateTransactionRepository } from './update-transaction'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library.js'
+import { transaction, user } from '../../../tests'
+import { faker } from '@faker-js/faker'
+import { TransactionType } from '@prisma/client'
+import dayjs from 'dayjs'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { TransactionNotFoundError } from '../../../errors'
 
 describe('PostgresUpdateTransactionRepository', () => {
@@ -17,10 +17,10 @@ describe('PostgresUpdateTransactionRepository', () => {
         const params = {
             id: faker.string.uuid(),
             user_id: user.id,
-            name: faker.commerce.productName(),
+            name: faker.string.alphanumeric(7),
             date: faker.date.anytime().toISOString(),
-            type: TransactionType.EXPENSE,
             amount: Number(faker.finance.amount()),
+            type: TransactionType.EXPENSE,
         }
 
         const result = await sut.execute(transaction.id, params)
@@ -60,12 +60,12 @@ describe('PostgresUpdateTransactionRepository', () => {
             .spyOn(prisma.transaction, 'update')
             .mockRejectedValueOnce(new Error())
 
-        const promise = sut.execute(transaction.id, transaction)
+        const promisse = sut.execute(transaction.id, transaction)
 
-        await expect(promise).rejects.toThrow()
+        expect(promisse).rejects.toThrow()
     })
 
-    it('should throw TransactionNotFoundError if Prisma does not find record to update', async () => {
+    it('should throw TransactionNotFoundError error if Prisma does not find record to update', async () => {
         const sut = new PostgresUpdateTransactionRepository()
         import.meta.jest
             .spyOn(prisma.transaction, 'update')
@@ -75,7 +75,7 @@ describe('PostgresUpdateTransactionRepository', () => {
                 }),
             )
 
-        const promise = sut.execute(transaction.id, transaction)
+        const promise = sut.execute(transaction.id)
 
         await expect(promise).rejects.toThrow(
             new TransactionNotFoundError(transaction.id),

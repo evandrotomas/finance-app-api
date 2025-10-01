@@ -1,3 +1,5 @@
+import { ZodError } from 'zod'
+import { loginSchema } from '../../schemas/user.js'
 import {
     badRequest,
     notFound,
@@ -5,19 +7,17 @@ import {
     serverError,
     unauthorized,
 } from '../helpers/index.js'
-import { loginSchema } from '../../schemas/index.js'
-import { ZodError } from 'zod'
-import { InvalidPasswordError, UserNotFoundError } from '../../errors/user.js'
+import { InvalidPasswordError, UserNotFoundError } from '../../errors/index.js'
 
 export class LoginUserController {
-    constructor(loginUserUseCase) {
-        this.loginUserUseCase = loginUserUseCase
+    constructor(loginUseUserCase) {
+        this.loginUseUserCase = loginUseUserCase
     }
     async execute(httpRequest) {
         try {
             const params = httpRequest.body
             await loginSchema.parseAsync(params)
-            const user = await this.loginUserUseCase.execute(
+            const user = await this.loginUseUserCase.execute(
                 params.email,
                 params.password,
             )
@@ -25,7 +25,7 @@ export class LoginUserController {
         } catch (error) {
             if (error instanceof ZodError) {
                 return badRequest({
-                    message: error.errors[0].message,
+                    message: error.issues[0].message,
                 })
             }
 

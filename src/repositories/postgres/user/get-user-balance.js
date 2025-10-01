@@ -9,6 +9,7 @@ export class PostgresGetUserBalanceRepository {
                 lte: new Date(to),
             },
         }
+
         const {
             _sum: { amount: totalExpenses },
         } = await prisma.transaction.aggregate({
@@ -63,9 +64,11 @@ export class PostgresGetUserBalanceRepository {
         const earningsPercentage = total.isZero()
             ? 0
             : _totalEarnings.div(total).times(100).floor()
+
         const expensesPercentage = total.isZero()
             ? 0
             : _totalExpenses.div(total).times(100).floor()
+
         const investmentsPercentage = total.isZero()
             ? 0
             : _totalInvestments.div(total).times(100).floor()

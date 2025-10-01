@@ -1,4 +1,4 @@
-import { InvalidPasswordError, UserNotFoundError } from '../../errors/user.js'
+import { InvalidPasswordError, UserNotFoundError } from '../../errors/index.js'
 
 export class LoginUserUseCase {
     constructor(
@@ -17,7 +17,7 @@ export class LoginUserUseCase {
             throw new UserNotFoundError()
         }
 
-        // verificaremos se a senha recebida é válida
+        // verificar se a senha recebida é válida
         const isPasswordValid = this.passwordComparatorAdapter.execute(
             password,
             user.password,
@@ -25,7 +25,9 @@ export class LoginUserUseCase {
         if (!isPasswordValid) {
             throw new InvalidPasswordError()
         }
-        // depois, gerar os tokens
+
+        // gerar os tokens
+
         return {
             ...user,
             tokens: this.tokensGeneratorAdapter.execute(user.id),

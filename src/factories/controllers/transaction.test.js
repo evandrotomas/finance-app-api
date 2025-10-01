@@ -2,6 +2,7 @@ import {
     CreateTransactionController,
     DeleteTransactionController,
     GetTransactionsByUserIdController,
+    GetUserBalanceController,
     UpdateTransactionController,
 } from '../../controllers'
 import {
@@ -10,29 +11,36 @@ import {
     makeGetTransactionsByUserIdController,
     makeUpdateTransactionController,
 } from './transaction'
+import { makeGetUserBalanceController } from './user'
 
-describe('Transaction Controller Factories', () => {
-    it('should return a valid CreateTransactionController instance', () => {
+describe('TransactionControllerFactories', () => {
+    it('should return a valid CreateTransactionController instance', async () => {
         expect(makeCreateTransactionController()).toBeInstanceOf(
             CreateTransactionController,
         )
     })
 
-    it('should return a valid UpdateTransactionController instance', () => {
+    it('should return a valid UpdateTransactionController instance', async () => {
         expect(makeUpdateTransactionController()).toBeInstanceOf(
             UpdateTransactionController,
         )
     })
 
-    it('should return a valid DeleteTransactionController instance', () => {
+    it('should return a valid DeleteTransactionController instance', async () => {
         expect(makeDeleteTransactionController()).toBeInstanceOf(
             DeleteTransactionController,
         )
     })
 
-    it('should return a valid GetTransactionsByUserIdController instance', () => {
+    it('should return a valid makeGetTransactionsByUserIdController instance', async () => {
         expect(makeGetTransactionsByUserIdController()).toBeInstanceOf(
             GetTransactionsByUserIdController,
+        )
+    })
+
+    it('should return a valid makeGetUserBalanceController instance', async () => {
+        expect(makeGetUserBalanceController()).toBeInstanceOf(
+            GetUserBalanceController,
         )
     })
 })

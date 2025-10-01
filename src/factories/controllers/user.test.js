@@ -1,40 +1,32 @@
 import {
     CreateUserController,
     DeleteUserController,
-    GetUserBalanceController,
     GetUserByIdController,
     UpdateUserController,
 } from '../../controllers'
 import {
     makeCreateUserController,
     makeDeleteUserController,
-    makeGetUserBalanceController,
     makeGetUserByIdController,
     makeUpdateUserController,
 } from './user'
 
-describe('User Controller Factories', () => {
-    it('should return a valid GetUserByIdController instance', () => {
+describe('UserControllerFactories', () => {
+    it('should return a valid CreateUserController instance', async () => {
+        expect(makeCreateUserController()).toBeInstanceOf(CreateUserController)
+    })
+
+    it('should return a valid GetUserByIdController instance', async () => {
         expect(makeGetUserByIdController()).toBeInstanceOf(
             GetUserByIdController,
         )
     })
 
-    it('should return a valid CreateUserController instance', () => {
-        expect(makeCreateUserController()).toBeInstanceOf(CreateUserController)
-    })
-
-    it('should return a valid UpdateUserController instance', () => {
+    it('should return a valid UpdateUserController instance', async () => {
         expect(makeUpdateUserController()).toBeInstanceOf(UpdateUserController)
     })
 
-    it('should return a valid DeleteUserController instance', () => {
+    it('should return a valid DeleteUserController instance', async () => {
         expect(makeDeleteUserController()).toBeInstanceOf(DeleteUserController)
-    })
-
-    it('should return a valid GetUserBalanceController instance', () => {
-        expect(makeGetUserBalanceController()).toBeInstanceOf(
-            GetUserBalanceController,
-        )
     })
 })

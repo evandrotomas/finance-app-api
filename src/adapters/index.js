@@ -1,4 +1,5 @@
 export * from './password-hasher.js'
 export * from './id-generator.js'
 export * from './password-comparator.js'
-export * from './tokens-generator.js'
+export * from './tokens-gererator.js'
+export * from './token-verifier.js'

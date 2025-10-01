@@ -1,5 +1,5 @@
 import { PostgresCreateUserRepository } from './create-user'
-import { user } from '../../../tests/index.js'
+import { user } from '../../../tests'
 import { prisma } from '../../../../prisma/prisma.js'
 
 describe('CreateUserRepository', () => {
@@ -21,19 +21,18 @@ describe('CreateUserRepository', () => {
 
         await sut.execute(user)
 
-        expect(prismaSpy).toHaveBeenCalledWith({
-            data: user,
-        })
+        expect(prismaSpy).toHaveBeenCalledWith({ data: user })
     })
 
     it('should throw if Prisma throws', async () => {
         const sut = new PostgresCreateUserRepository()
+
         import.meta.jest
             .spyOn(prisma.user, 'create')
             .mockRejectedValueOnce(new Error())
 
-        const promise = sut.execute(user)
+        const promisse = sut.execute(user)
 
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 })

@@ -1,6 +1,6 @@
 import { badRequest, ok, serverError, unauthorized } from '../helpers/index.js'
 import { UnauthorizedError } from '../../errors/index.js'
-import { refreshTokenSchema } from '../../schemas/index.js'
+import { refreshTokenSchema } from '../../schemas/user.js'
 import { ZodError } from 'zod'
 
 export class RefreshTokenController {
@@ -19,7 +19,7 @@ export class RefreshTokenController {
         } catch (error) {
             if (error instanceof ZodError) {
                 return badRequest({
-                    message: error.errors[0].message,
+                    message: error.issues[0].message,
                 })
             }
 

@@ -1,4 +1,5 @@
 import { UnauthorizedError } from '../../errors/index.js'
+
 export class RefreshTokenUseCase {
     constructor(tokensGeneratorAdapter, tokenVerifierAdapter) {
         this.tokensGeneratorAdapter = tokensGeneratorAdapter
@@ -15,6 +16,7 @@ export class RefreshTokenUseCase {
             if (!decodedToken) {
                 throw new UnauthorizedError()
             }
+
             return this.tokensGeneratorAdapter.execute(decodedToken.userId)
         } catch (error) {
             console.error(error)

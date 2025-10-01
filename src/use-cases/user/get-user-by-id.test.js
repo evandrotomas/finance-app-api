@@ -1,5 +1,5 @@
-import { GetUserByIdUseCase } from './get-user-by-id'
 import { faker } from '@faker-js/faker'
+import { GetUserByIdUseCase } from './get-user-by-id'
 import { user } from '../../tests'
 
 describe('GetUserByIdUseCase', () => {
@@ -13,23 +13,20 @@ describe('GetUserByIdUseCase', () => {
         const getUserByIdRepository = new GetUserByIdRepositoryStub()
         const sut = new GetUserByIdUseCase(getUserByIdRepository)
 
-        return {
-            sut,
-            getUserByIdRepository,
-        }
+        return { sut, getUserByIdRepository }
     }
+
     it('should get user by id successfully', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(faker.string.uuid())
+        const getUser = await sut.execute(faker.string.uuid())
 
-        // assert
-        expect(result).toEqual(user)
+        expect(getUser).toEqual(user)
     })
 
-    it('should call GetUserByIdRepository with correct params', async () => {
+    it('should call GetUserByIdRepository wirh correct params', async () => {
         // arrange
         const { sut, getUserByIdRepository } = makeSut()
         const executeSpy = import.meta.jest.spyOn(
@@ -50,12 +47,12 @@ describe('GetUserByIdUseCase', () => {
         const { sut, getUserByIdRepository } = makeSut()
         import.meta.jest
             .spyOn(getUserByIdRepository, 'execute')
-            .mockRejectedValue(new Error())
+            .mockRejectedValueOnce(new Error())
 
         // act
-        const promise = sut.execute(faker.string.uuid())
+        const promisse = sut.execute(faker.string.uuid())
 
         // assert
-        await expect(promise).rejects.toThrow()
+        await expect(promisse).rejects.toThrow()
     })
 })

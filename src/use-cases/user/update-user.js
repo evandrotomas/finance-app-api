@@ -3,15 +3,16 @@ import { EmailAlreadyInUseError } from '../../errors/user.js'
 export class UpdateUserUseCase {
     constructor(
         getUserByEmailRepository,
-        updateUserRepository,
+        postgresUpdateUserRepository,
         passwordHasherAdapter,
     ) {
         this.getUserByEmailRepository = getUserByEmailRepository
-        this.updateUserRepository = updateUserRepository
+        this.postgresUpdateUserRepository = postgresUpdateUserRepository
         this.passwordHasherAdapter = passwordHasherAdapter
     }
 
     async execute(userId, updateUserParams) {
+        // 1. se o e-mail estiver sendo atualizado, verificar se ele já está em uso
         if (updateUserParams.email) {
             const userWithProvidedEmail =
                 await this.getUserByEmailRepository.execute(
@@ -23,8 +24,11 @@ export class UpdateUserUseCase {
             }
         }
 
-        const user = { ...updateUserParams }
+        const user = {
+            ...updateUserParams,
+        }
 
+        // 2. Se a senha estiver sendo atualizada, criptografar a nova senha
         if (updateUserParams.password) {
             const hashedPassword = await this.passwordHasherAdapter.execute(
                 updateUserParams.password,
@@ -33,11 +37,12 @@ export class UpdateUserUseCase {
             user.password = hashedPassword
         }
 
-        const updatedUser = await this.updateUserRepository.execute(
+        // 3. Chamar o repositório para atualizar o usuário no banco de dados
+        const updateUser = await this.postgresUpdateUserRepository.execute(
             userId,
             user,
         )
 
-        return updatedUser
+        return updateUser
     }
 }
