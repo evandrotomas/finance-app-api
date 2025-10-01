@@ -1,7 +1,7 @@
-import { PostgresDeleteUserRepository } from './delete-user'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { prisma } from '../../../../prisma/prisma'
 import { user } from '../../../tests'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { PostgresDeleteUserRepository } from './delete-user'
 import { UserNotFoundError } from '../../../errors'
 
 describe('PostgresDeleteUserRepository', () => {
@@ -17,7 +17,7 @@ describe('PostgresDeleteUserRepository', () => {
         expect(result).toStrictEqual(user)
     })
 
-    it('should call prisma with correct params', async () => {
+    it('should call Prisma with correct params', async () => {
         await prisma.user.create({ data: user })
         const sut = new PostgresDeleteUserRepository()
         const prismaSpy = import.meta.jest.spyOn(prisma.user, 'delete')
@@ -42,7 +42,7 @@ describe('PostgresDeleteUserRepository', () => {
         await expect(promise).rejects.toThrow()
     })
 
-    it('should throw generic error if Prisma throws generic error', async () => {
+    it('should throw UserNotFoundError if Prisma does not find record to delete', async () => {
         const sut = new PostgresDeleteUserRepository()
         import.meta.jest.spyOn(prisma.user, 'delete').mockRejectedValueOnce(
             new PrismaClientKnownRequestError('', {

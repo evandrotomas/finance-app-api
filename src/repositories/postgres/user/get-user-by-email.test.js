@@ -1,10 +1,10 @@
 import { prisma } from '../../../../prisma/prisma'
 import { PostgresGetUserByEmailRepository } from './get-user-by-email'
-import { user as fakerUser } from '../../../tests'
+import { user as fakeUser } from '../../../tests'
 
-describe('PostgresGetUserByEmail', () => {
+describe('GetUserByEmailRepository', () => {
     it('should get user by email on db', async () => {
-        const user = await prisma.user.create({ data: fakerUser })
+        const user = await prisma.user.create({ data: fakeUser })
 
         const sut = new PostgresGetUserByEmailRepository()
 
@@ -18,24 +18,23 @@ describe('PostgresGetUserByEmail', () => {
 
         const prismaSpy = import.meta.jest.spyOn(prisma.user, 'findUnique')
 
-        await sut.execute(fakerUser.email)
+        await sut.execute(fakeUser.email)
 
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                email: fakerUser.email,
+                email: fakeUser.email,
             },
         })
     })
 
     it('should throw if Prisma throws', async () => {
         const sut = new PostgresGetUserByEmailRepository()
-
         import.meta.jest
             .spyOn(prisma.user, 'findUnique')
             .mockRejectedValueOnce(new Error())
 
-        const promisse = sut.execute(fakerUser.email)
+        const promise = sut.execute(fakeUser.email)
 
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

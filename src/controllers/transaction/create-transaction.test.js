@@ -1,7 +1,7 @@
 import { CreateTransactionController } from './create-transaction'
 import { transaction } from '../../tests'
 
-describe('CreateTransactionController', () => {
+describe('Create Transaction Controller', () => {
     class CreateTransactionUseCaseStub {
         async execute() {
             return transaction
@@ -12,88 +12,92 @@ describe('CreateTransactionController', () => {
         const createTransactionUseCase = new CreateTransactionUseCaseStub()
         const sut = new CreateTransactionController(createTransactionUseCase)
 
-        return { sut, createTransactionUseCase }
+        return {
+            sut,
+            createTransactionUseCase,
+        }
     }
-    const httpRequest = {
+
+    const baseHttpRequest = {
         body: {
             ...transaction,
             id: undefined,
         },
     }
 
-    it('should return 201 when creating a transaction successfully (expense)', async () => {
+    it('should return 201 when creating transaction successfully (expense)', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(baseHttpRequest)
 
         // assert
-        expect(result.statusCode).toBe(201)
+        expect(response.statusCode).toBe(201)
     })
 
-    it('should return 201 when creating a transaction successfully (earning)', async () => {
+    it('should return 201 when creating transaction successfully (earning)', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
+                ...baseHttpRequest.body,
                 type: 'EARNING',
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(201)
+        expect(response.statusCode).toBe(201)
     })
 
-    it('should return 201 when creating a transaction successfully (investment)', async () => {
+    it('should return 201 when creating transaction successfully (investment)', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
+                ...baseHttpRequest.body,
                 type: 'INVESTMENT',
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(201)
+        expect(response.statusCode).toBe(201)
     })
 
-    it('should return 400 missing user_id', async () => {
+    it('should return 400 when missing user_id', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
-            httpRequest: {
-                ...httpRequest.body,
-                user_id: '',
-            },
-        })
-
-        // assert
-        expect(result.statusCode).toBe(400)
-    })
-
-    it('should return 400 missing name', async () => {
-        // arrange
-        const { sut } = makeSut()
-
-        // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
-                name: '',
+                ...baseHttpRequest.body,
+                user_id: undefined,
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('should return 400 when missing name', async () => {
+        // arrange
+        const { sut } = makeSut()
+
+        // act
+        const response = await sut.execute({
+            body: {
+                ...baseHttpRequest.body,
+                name: undefined,
+            },
+        })
+
+        // assert
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 400 when missing date', async () => {
@@ -101,47 +105,47 @@ describe('CreateTransactionController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
-                date: '',
+                ...baseHttpRequest.body,
+                date: undefined,
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 400 missing amount', async () => {
+    it('should return 400 when missing type', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
-                amount: '',
+                ...baseHttpRequest.body,
+                type: undefined,
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 400 missing type', async () => {
+    it('should return 400 when missing amount', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
-                type: '',
+                ...baseHttpRequest.body,
+                amount: undefined,
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 400 when date is invalid', async () => {
@@ -149,31 +153,31 @@ describe('CreateTransactionController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
+                ...baseHttpRequest.body,
                 date: 'invalid_date',
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 400 when type is  not EXPENSE, EARNING or INVESTMENT', async () => {
+    it('should return 400 when type is not EXPENSE, EARNING or INVESTMENT', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
+                ...baseHttpRequest.body,
                 type: 'invalid_type',
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 400 when amount is not a valid currency', async () => {
@@ -181,18 +185,18 @@ describe('CreateTransactionController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             body: {
-                ...httpRequest.body,
+                ...baseHttpRequest.body,
                 amount: 'invalid_amount',
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 500 when CreateTransactionController throws', async () => {
+    it('should return 500 when CreateTransactionUseCase throws', async () => {
         // arrange
         const { sut, createTransactionUseCase } = makeSut()
         import.meta.jest
@@ -200,10 +204,10 @@ describe('CreateTransactionController', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(baseHttpRequest)
 
         // assert
-        expect(result.statusCode).toBe(500)
+        expect(response.statusCode).toBe(500)
     })
 
     it('should call CreateTransactionUseCase with correct params', async () => {
@@ -215,9 +219,9 @@ describe('CreateTransactionController', () => {
         )
 
         // act
-        await sut.execute(httpRequest)
+        await sut.execute(baseHttpRequest)
 
         // assert
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
+        expect(executeSpy).toHaveBeenCalledWith(baseHttpRequest.body)
     })
 })

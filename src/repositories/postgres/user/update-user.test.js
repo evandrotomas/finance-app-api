@@ -1,9 +1,9 @@
-import { prisma } from '../../../../prisma/prisma'
-import { PostgresUpdateUserRepository } from './update-user'
-import { user as fakeUser } from '../../../tests'
 import { faker } from '@faker-js/faker'
+import { prisma } from '../../../../prisma/prisma.js'
+import { user as fakeUser } from '../../../tests'
+import { PostgresUpdateUserRepository } from './update-user.js'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-import { UserNotFoundError } from '../../../errors/user'
+import { UserNotFoundError } from '../../../errors/user.js'
 
 describe('PostgresUpdateUserRepository', () => {
     const updateUserParams = {
@@ -11,14 +11,11 @@ describe('PostgresUpdateUserRepository', () => {
         first_name: faker.person.firstName(),
         last_name: faker.person.lastName(),
         email: faker.internet.email(),
-        password: faker.internet.password({
-            length: 7,
-        }),
+        password: faker.internet.password(),
     }
 
     it('should update user on db', async () => {
         const user = await prisma.user.create({ data: fakeUser })
-
         const sut = new PostgresUpdateUserRepository()
 
         const result = await sut.execute(user.id, updateUserParams)
@@ -46,17 +43,16 @@ describe('PostgresUpdateUserRepository', () => {
 
     it('should throw if Prisma throws', async () => {
         const sut = new PostgresUpdateUserRepository()
-
         import.meta.jest
             .spyOn(prisma.user, 'update')
             .mockRejectedValueOnce(new Error())
 
-        const promisse = sut.execute(updateUserParams)
+        const promise = sut.execute(updateUserParams)
 
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 
-    it('should throw UserNotFoundError error if Prisma does not find record to update', async () => {
+    it('should throw UserNotFoundError if Prisma does not find record to update', async () => {
         const sut = new PostgresUpdateUserRepository()
         import.meta.jest.spyOn(prisma.user, 'update').mockRejectedValueOnce(
             new PrismaClientKnownRequestError('', {

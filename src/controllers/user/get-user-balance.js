@@ -1,12 +1,12 @@
+import { ZodError } from 'zod'
 import { UserNotFoundError } from '../../errors/user.js'
+import { getUserBalanceSchema } from '../../schemas/user.js'
 import {
-    badRequest,
-    ok,
     serverError,
     userNotFoundResponse,
+    ok,
+    badRequest,
 } from '../helpers/index.js'
-import { getUserBalanceSchema } from '../../schemas/index.js'
-import { ZodError } from 'zod'
 
 export class GetUserBalanceController {
     constructor(getUserBalanceUseCase) {
@@ -36,7 +36,7 @@ export class GetUserBalanceController {
             }
             if (error instanceof ZodError) {
                 return badRequest({
-                    message: error.issues[0].message,
+                    message: error.errors[0].message,
                 })
             }
 

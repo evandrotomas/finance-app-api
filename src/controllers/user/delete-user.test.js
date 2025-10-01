@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
-import { DeleteUserController } from './delete-user.js'
+import { DeleteUserController } from './delete-user'
 import { user } from '../../tests'
-import { UserNotFoundError } from '../../errors/user.js'
+import { UserNotFoundError } from '../../errors'
 
 describe('DeleteUserController', () => {
     class DeleteUserUseCaseStub {
@@ -9,7 +9,6 @@ describe('DeleteUserController', () => {
             return user
         }
     }
-
     const makeSut = () => {
         const deleteUserUseCase = new DeleteUserUseCaseStub()
         const sut = new DeleteUserController(deleteUserUseCase)
@@ -23,7 +22,7 @@ describe('DeleteUserController', () => {
         },
     }
 
-    it('should return 200 if user is delete', async () => {
+    it('should return 200 if user is deleted', async () => {
         // arrange
         const { sut } = makeSut()
 
@@ -39,19 +38,14 @@ describe('DeleteUserController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
-            params: {
-                ...httpRequest.params,
-                userId: 'invalid_id',
-            },
-        })
+        const result = await sut.execute({ params: { userId: 'invalid_id' } })
 
         // assert
         expect(result.statusCode).toBe(400)
     })
 
     it('should return 404 if user is not found', async () => {
-        // arrenge
+        // arrange
         const { sut, deleteUserUseCase } = makeSut()
         import.meta.jest
             .spyOn(deleteUserUseCase, 'execute')
@@ -64,7 +58,7 @@ describe('DeleteUserController', () => {
         expect(result.statusCode).toBe(404)
     })
 
-    it('should retun 500 if DeleteUserCase throws', async () => {
+    it('should return 500 if DeleteUserUseCase throws', async () => {
         // arrange
         const { sut, deleteUserUseCase } = makeSut()
         import.meta.jest
@@ -78,7 +72,7 @@ describe('DeleteUserController', () => {
         expect(result.statusCode).toBe(500)
     })
 
-    it('should call DeleteUserUseCase with correts params', async () => {
+    it('should call DeleteUserUseCase with correct params', async () => {
         // arrange
         const { sut, deleteUserUseCase } = makeSut()
         const executeSpy = import.meta.jest.spyOn(deleteUserUseCase, 'execute')

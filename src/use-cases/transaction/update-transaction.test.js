@@ -9,7 +9,7 @@ describe('UpdateTransactionUseCase', () => {
         }
     }
 
-    class GetTransactionByIdRepositoryStub {
+    class GetTransactionByIdStub {
         async execute() {
             return transaction
         }
@@ -18,21 +18,19 @@ describe('UpdateTransactionUseCase', () => {
     const makeSut = () => {
         const updateTransactionRepository =
             new UpdateTransactionRepositoryStub()
-        const getTransactionByIdRepository =
-            new GetTransactionByIdRepositoryStub()
+        const getTransactionById = new GetTransactionByIdStub()
         const sut = new UpdateTransactionUseCase(
             updateTransactionRepository,
-            getTransactionByIdRepository,
+            getTransactionById,
         )
 
         return {
             sut,
             updateTransactionRepository,
-            getTransactionByIdRepository,
         }
     }
 
-    it('should update transaction successfully', async () => {
+    it('should create a transaction successfully', async () => {
         // arrange
         const { sut } = makeSut()
 
@@ -75,11 +73,11 @@ describe('UpdateTransactionUseCase', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const promisse = sut.execute(transaction.id, {
+        const promise = sut.execute(transaction.id, {
             amount: transaction.amount,
         })
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

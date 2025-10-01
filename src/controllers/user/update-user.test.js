@@ -1,7 +1,7 @@
-import { faker } from '@faker-js/faker'
-import { UpdateUserController } from './update-user'
 import { EmailAlreadyInUseError, UserNotFoundError } from '../../errors/user'
 import { user } from '../../tests'
+import { UpdateUserController } from './update-user'
+import { faker } from '@faker-js/faker'
 
 describe('UpdateUserController', () => {
     class UpdateUserUseCaseStub {
@@ -21,7 +21,6 @@ describe('UpdateUserController', () => {
         params: {
             userId: faker.string.uuid(),
         },
-
         body: {
             first_name: faker.person.firstName(),
             last_name: faker.person.lastName(),
@@ -32,15 +31,15 @@ describe('UpdateUserController', () => {
         },
     }
 
-    it('should return 200 if user updated succesfully', async () => {
+    it('should return 200 when updating a user successfully', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(httpRequest)
 
         // assert
-        expect(result.statusCode).toBe(200)
+        expect(response.statusCode).toBe(200)
     })
 
     it('should return 400 when an invalid email is provided', async () => {
@@ -48,7 +47,7 @@ describe('UpdateUserController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             params: httpRequest.params,
             body: {
                 ...httpRequest.body,
@@ -57,15 +56,15 @@ describe('UpdateUserController', () => {
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 400 when a password was less than 6', async () => {
+    it('should return 400 when an invalid password is provided', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             params: httpRequest.params,
             body: {
                 ...httpRequest.body,
@@ -74,21 +73,23 @@ describe('UpdateUserController', () => {
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
-    it('should return 400 when a invalid id is provided', async () => {
+    it('should return 400 when an invalid id is provided', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
-            params: { userId: 'invalid_id' },
+        const response = await sut.execute({
+            params: {
+                userId: 'invalid_id',
+            },
             body: httpRequest.body,
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 400 when an unallowed field is provided', async () => {
@@ -96,13 +97,16 @@ describe('UpdateUserController', () => {
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             params: httpRequest.params,
-            body: { ...httpRequest.body, age: 32 },
+            body: {
+                ...httpRequest.body,
+                unallowed_field: 'unallowed_value',
+            },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 500 if UpdateUserUseCase throws with generic error', async () => {
@@ -113,10 +117,10 @@ describe('UpdateUserController', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(httpRequest)
 
         // assert
-        expect(result.statusCode).toBe(500)
+        expect(response.statusCode).toBe(500)
     })
 
     it('should return 400 if UpdateUserUseCase throws EmailAlreadyInUseError', async () => {
@@ -129,10 +133,10 @@ describe('UpdateUserController', () => {
             )
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(httpRequest)
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(400)
     })
 
     it('should return 404 if UpdateUserUseCase throws UserNotFoundError', async () => {
@@ -143,10 +147,10 @@ describe('UpdateUserController', () => {
             .mockRejectedValueOnce(new UserNotFoundError(faker.string.uuid()))
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute(httpRequest)
 
         // assert
-        expect(result.statusCode).toBe(404)
+        expect(response.statusCode).toBe(404)
     })
 
     it('should call UpdateUserUseCase with correct params', async () => {

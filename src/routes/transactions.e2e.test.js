@@ -4,6 +4,9 @@ import { transaction, user } from '../tests/index.js'
 import { TransactionType } from '@prisma/client'
 
 describe('Transaction Routes E2E Tests', () => {
+    const from = '2024-01-01'
+    const to = '2024-01-31'
+
     it('POST /api/transactions/me should return 201 when creating a transaction successfully', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
@@ -31,9 +34,6 @@ describe('Transaction Routes E2E Tests', () => {
                 id: undefined,
             })
 
-        const from = '2025-01-01'
-        const to = '2025-01-31'
-
         const { body: createdTransaction } = await request(app)
             .post('/api/transactions/me')
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
@@ -52,7 +52,7 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body[0].id).toBe(createdTransaction.id)
     })
 
-    it('PATCH /api/transaction/me/:transactionId should return 200 when updating a transaction successfully', async () => {
+    it('PATCH /api/transactions/me/:transactionId should return 200 when updating a transaction successfully', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -75,7 +75,7 @@ describe('Transaction Routes E2E Tests', () => {
         expect(response.body.type).toBe(TransactionType.INVESTMENT)
     })
 
-    it('DELETE /api/transaction/:transactionId should return 200 when deleting a transaction successfully', async () => {
+    it('DELETE /api/transactions/:transactionId should return 200 when deleting a transaction successfully', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -121,7 +121,7 @@ describe('Transaction Routes E2E Tests', () => {
             })
 
         const response = await request(app)
-            .delete(`/api/transaction/me/${transaction.id}`)
+            .delete(`/api/transactions/me/${transaction.id}`)
             .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
 
         expect(response.status).toBe(404)

@@ -7,7 +7,6 @@ export const auth = (request, response, next) => {
         if (!accessToken) {
             return response.status(401).send({ message: 'Unauthorized' })
         }
-
         // verificar se o access token é válido
         const decodedToken = jwt.verify(
             accessToken,
@@ -17,8 +16,7 @@ export const auth = (request, response, next) => {
             return response.status(401).send({ message: 'Unauthorized' })
         }
         request.userId = decodedToken.userId
-
-        // se for válido, deixa a requisição prosseguir
+        // se for válido, eu deixo a requisição prosseguir
         next()
     } catch (error) {
         console.error(error)

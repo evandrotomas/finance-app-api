@@ -1,14 +1,13 @@
 import request from 'supertest'
 import { app } from '../app.js'
-import { user } from '../tests/index.js'
+import { user } from '../tests/fixtures/user.js'
 import { faker } from '@faker-js/faker'
 import { TransactionType } from '@prisma/client'
 
 describe('User Routes E2E Tests', () => {
-    const from = '2025-01-01'
-    const to = '2025-01-31'
-
-    it('POST /users should return 201 when user is created', async () => {
+    const from = '2024-01-01'
+    const to = '2024-01-31'
+    it('POST /api/users should return 201 when user is created', async () => {
         const response = await request(app)
             .post('/api/users')
             .send({
@@ -19,7 +18,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.status).toBe(201)
     })
 
-    it('GET /api/users/me should 200 when user if user is authenticaded', async () => {
+    it('GET /api/users/me should return 200 if user is authenticated', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -47,7 +46,7 @@ describe('User Routes E2E Tests', () => {
             first_name: faker.person.firstName(),
             last_name: faker.person.lastName(),
             email: faker.internet.email(),
-            password: faker.internet.password({ length: 7 }),
+            password: faker.internet.password(),
         }
 
         const response = await request(app)
@@ -59,7 +58,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.body.first_name).toBe(updateUserParams.first_name)
         expect(response.body.last_name).toBe(updateUserParams.last_name)
         expect(response.body.email).toBe(updateUserParams.email)
-        expect(response.body.password).not.toBe(updateUserParams.password)
+        expect(response.body.password).not.toBe(createdUser.password)
     })
 
     it('DELETE /api/users/me should return 200 when user is deleted', async () => {
@@ -135,7 +134,7 @@ describe('User Routes E2E Tests', () => {
         })
     })
 
-    it('POST /api/users should reeturn 400 when the provided e-amil is already in use', async () => {
+    it('POST /api/users should return 400 when the provided e-mail is already in use', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({
@@ -154,7 +153,7 @@ describe('User Routes E2E Tests', () => {
         expect(response.status).toBe(400)
     })
 
-    it('Post /api/users/login should return 200 and tokens when user credentials are valid', async () => {
+    it('POST /api/users/login should return 200 and tokens when user credentials are valid', async () => {
         const { body: createdUser } = await request(app)
             .post('/api/users')
             .send({

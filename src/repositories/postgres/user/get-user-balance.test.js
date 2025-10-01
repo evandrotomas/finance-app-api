@@ -1,59 +1,58 @@
 import { faker } from '@faker-js/faker'
 import { prisma } from '../../../../prisma/prisma'
-import { user as fakerUser } from '../../../tests'
+import { user as fakeUser } from '../../../tests'
 import { PostgresGetUserBalanceRepository } from './get-user-balance'
 import { TransactionType } from '@prisma/client'
 
 describe('PostgresGetUserBalanceRepository', () => {
-    const from = '2025-01-01'
-    const to = '2025-01-31'
-
+    const from = '2024-01-01'
+    const to = '2024-01-31'
     it('should get user balance on db', async () => {
-        const user = await prisma.user.create({ data: fakerUser })
+        const user = await prisma.user.create({ data: fakeUser })
 
         await prisma.transaction.createMany({
             data: [
                 {
                     name: faker.string.sample(),
-                    date: new Date(from),
-                    user_id: user.id,
-                    type: 'EARNING',
                     amount: 5000,
-                },
-                {
-                    name: faker.string.sample(),
                     date: new Date(from),
-                    user_id: user.id,
                     type: 'EARNING',
-                    amount: 5000,
+                    user_id: user.id,
                 },
                 {
                     name: faker.string.sample(),
                     date: new Date(from),
+                    amount: 5000,
+                    type: 'EARNING',
                     user_id: user.id,
-                    type: 'EXPENSE',
+                },
+                {
+                    name: faker.string.sample(),
+                    date: new Date(from),
                     amount: 1000,
-                },
-                {
-                    name: faker.string.sample(),
-                    date: new Date(to),
-                    user_id: user.id,
                     type: 'EXPENSE',
+                    user_id: user.id,
+                },
+                {
+                    name: faker.string.sample(),
+                    date: new Date(to),
                     amount: 1000,
+                    type: 'EXPENSE',
+                    user_id: user.id,
                 },
                 {
                     name: faker.string.sample(),
                     date: new Date(to),
-                    user_id: user.id,
-                    type: 'INVESTMENT',
                     amount: 3000,
+                    type: 'INVESTMENT',
+                    user_id: user.id,
                 },
                 {
                     name: faker.string.sample(),
                     date: new Date(to),
-                    user_id: user.id,
-                    type: 'INVESTMENT',
                     amount: 3000,
+                    type: 'INVESTMENT',
+                    user_id: user.id,
                 },
             ],
         })
@@ -68,19 +67,19 @@ describe('PostgresGetUserBalanceRepository', () => {
         expect(result.balance.toString()).toBe('2000')
     })
 
-    it('should call prisma with correct params', async () => {
+    it('should call Prisma with correct params', async () => {
         const sut = new PostgresGetUserBalanceRepository()
         const prismaSpy = import.meta.jest.spyOn(
             prisma.transaction,
             'aggregate',
         )
 
-        await sut.execute(fakerUser.id, from, to)
+        await sut.execute(fakeUser.id, from, to)
 
         expect(prismaSpy).toHaveBeenCalledTimes(3)
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                user_id: fakerUser.id,
+                user_id: fakeUser.id,
                 type: TransactionType.EXPENSE,
                 date: {
                     gte: new Date(from),
@@ -93,7 +92,7 @@ describe('PostgresGetUserBalanceRepository', () => {
         })
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                user_id: fakerUser.id,
+                user_id: fakeUser.id,
                 type: TransactionType.EARNING,
                 date: {
                     gte: new Date(from),
@@ -106,7 +105,7 @@ describe('PostgresGetUserBalanceRepository', () => {
         })
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                user_id: fakerUser.id,
+                user_id: fakeUser.id,
                 type: TransactionType.INVESTMENT,
                 date: {
                     gte: new Date(from),
@@ -121,13 +120,12 @@ describe('PostgresGetUserBalanceRepository', () => {
 
     it('should throw if Prisma throws', async () => {
         const sut = new PostgresGetUserBalanceRepository()
-
         import.meta.jest
             .spyOn(prisma.transaction, 'aggregate')
             .mockRejectedValueOnce(new Error())
 
-        const promisse = sut.execute(fakerUser.id, from, to)
+        const promise = sut.execute(fakeUser.id, from, to)
 
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

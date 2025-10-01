@@ -2,11 +2,11 @@ import { Router } from 'express'
 import {
     makeCreateUserController,
     makeDeleteUserController,
-    makeGetUserByIdController,
-    makeUpdateUserController,
     makeGetUserBalanceController,
+    makeGetUserByIdController,
     makeLoginUserController,
     makeRefreshTokenController,
+    makeUpdateUserController,
 } from '../factories/controllers/user.js'
 import { auth } from '../middlewares/auth.js'
 
@@ -15,7 +15,7 @@ export const usersRouter = Router()
 usersRouter.get('/me', auth, async (request, response) => {
     const getUserByIdController = makeGetUserByIdController()
 
-    console.log('Usuário autenticado', request.userId)
+    console.log('Usuário autenticado: ', request.userId)
 
     const { statusCode, body } = await getUserByIdController.execute({
         ...request,

@@ -25,7 +25,7 @@ export const created = (body) => ({
 export const serverError = () => ({
     statusCode: 500,
     body: {
-        Message: 'Internal server error',
+        message: 'Internal server error',
     },
 })
 

@@ -1,6 +1,6 @@
-import { faker } from '@faker-js/faker'
-import { UpdateUserUseCase } from './update-user'
 import { EmailAlreadyInUseError } from '../../errors/user'
+import { UpdateUserUseCase } from './update-user'
+import { faker } from '@faker-js/faker'
 import { user } from '../../tests'
 
 describe('UpdateUserUseCase', () => {
@@ -26,6 +26,7 @@ describe('UpdateUserUseCase', () => {
         const getUserByEmailRepository = new GetUserByEmailRepositoryStub()
         const updateUserRepository = new UpdateUserRepositoryStub()
         const passwordHasherAdapter = new PasswordHasherAdapterStub()
+
         const sut = new UpdateUserUseCase(
             getUserByEmailRepository,
             updateUserRepository,
@@ -61,7 +62,6 @@ describe('UpdateUserUseCase', () => {
             getUserByEmailRepository,
             'execute',
         )
-
         const email = faker.internet.email()
 
         // act
@@ -70,7 +70,7 @@ describe('UpdateUserUseCase', () => {
         })
 
         // assert
-        expect(getUserByEmailRepositorySpy).toHaveBeenLastCalledWith(email)
+        expect(getUserByEmailRepositorySpy).toHaveBeenCalledWith(email)
         expect(result).toBe(user)
     })
 
@@ -87,12 +87,13 @@ describe('UpdateUserUseCase', () => {
         const result = await sut.execute(faker.string.uuid(), {
             password,
         })
+
         // assert
         expect(passwordHasherAdapterSpy).toHaveBeenCalledWith(password)
         expect(result).toBe(user)
     })
 
-    it('should throw EmailAlreadyInUseError if email is already in use ', async () => {
+    it('should throw EmailAlreadyInUseError if email is already in use', async () => {
         // arrange
         const { sut, getUserByEmailRepository } = makeSut()
         import.meta.jest
@@ -100,15 +101,17 @@ describe('UpdateUserUseCase', () => {
             .mockResolvedValue(user)
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), {
+        const promise = sut.execute(faker.string.uuid(), {
             email: user.email,
         })
 
         // assert
-        expect(promisse).rejects.toThrow(new EmailAlreadyInUseError(user.email))
+        await expect(promise).rejects.toThrow(
+            new EmailAlreadyInUseError(user.email),
+        )
     })
 
-    it('should call UpdateUserRepository wirh correct params', async () => {
+    it('should call UpdateUserRepository with correct params', async () => {
         // arrange
         const { sut, updateUserRepository } = makeSut()
         const updateUserRepositorySpy = import.meta.jest.spyOn(
@@ -137,13 +140,15 @@ describe('UpdateUserUseCase', () => {
         const { sut, getUserByEmailRepository } = makeSut()
         import.meta.jest
             .spyOn(getUserByEmailRepository, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), { email: user.email })
+        const promise = sut.execute(faker.string.uuid(), {
+            email: faker.internet.email(),
+        })
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 
     it('should throw if PasswordHasherAdapter throws', async () => {
@@ -151,15 +156,15 @@ describe('UpdateUserUseCase', () => {
         const { sut, passwordHasherAdapter } = makeSut()
         import.meta.jest
             .spyOn(passwordHasherAdapter, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), {
-            password: user.password,
+        const promise = sut.execute(faker.string.uuid(), {
+            password: faker.internet.password(),
         })
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 
     it('should throw if UpdateUserRepository throws', async () => {
@@ -167,14 +172,17 @@ describe('UpdateUserUseCase', () => {
         const { sut, updateUserRepository } = makeSut()
         import.meta.jest
             .spyOn(updateUserRepository, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), {
-            user,
+        const promise = sut.execute(faker.string.uuid(), {
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
         })
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

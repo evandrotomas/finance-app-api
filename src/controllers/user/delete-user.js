@@ -2,9 +2,9 @@ import { UserNotFoundError } from '../../errors/user.js'
 import {
     checkIfIdIsValid,
     invalidIdResponse,
+    userNotFoundResponse,
     ok,
     serverError,
-    userNotFoundResponse,
 } from '../helpers/index.js'
 
 export class DeleteUserController {

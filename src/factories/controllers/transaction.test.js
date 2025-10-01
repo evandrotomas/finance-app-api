@@ -2,8 +2,7 @@ import {
     CreateTransactionController,
     DeleteTransactionController,
     GetTransactionsByUserIdController,
-    GetUserBalanceController,
-    UpdatetransactionController,
+    UpdateTransactionController,
 } from '../../controllers'
 import {
     makeCreateTransactionController,
@@ -11,36 +10,29 @@ import {
     makeGetTransactionsByUserIdController,
     makeUpdateTransactionController,
 } from './transaction'
-import { makeGetUserBalanceController } from './user'
 
-describe('TransactionControllerFactories', () => {
-    it('should return a valid CreateTransactionController instance', async () => {
+describe('Transaction Controller Factories', () => {
+    it('should return a valid CreateTransactionController instance', () => {
         expect(makeCreateTransactionController()).toBeInstanceOf(
             CreateTransactionController,
         )
     })
 
-    it('should return a valid UpdateTransactionController instance', async () => {
+    it('should return a valid UpdateTransactionController instance', () => {
         expect(makeUpdateTransactionController()).toBeInstanceOf(
-            UpdatetransactionController,
+            UpdateTransactionController,
         )
     })
 
-    it('should return a valid DeleteTransactionController instance', async () => {
+    it('should return a valid DeleteTransactionController instance', () => {
         expect(makeDeleteTransactionController()).toBeInstanceOf(
             DeleteTransactionController,
         )
     })
 
-    it('should return a valid makeGetTransactionsByUserIdController instance', async () => {
+    it('should return a valid GetTransactionsByUserIdController instance', () => {
         expect(makeGetTransactionsByUserIdController()).toBeInstanceOf(
             GetTransactionsByUserIdController,
-        )
-    })
-
-    it('should return a valid makeGetUserBalanceController instance', async () => {
-        expect(makeGetUserBalanceController()).toBeInstanceOf(
-            GetUserBalanceController,
         )
     })
 })

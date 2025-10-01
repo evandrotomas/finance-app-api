@@ -1,9 +1,9 @@
-import { faker } from '@faker-js/faker'
-import { GetUserBalanceUseCase } from './get-user-balance'
 import { UserNotFoundError } from '../../errors/user'
+import { GetUserBalanceUseCase } from './get-user-balance'
+import { faker } from '@faker-js/faker'
 import { userBalance, user } from '../../tests'
 
-describe('GetUserBalanceUserCase', () => {
+describe('GetUserBalanceUseCase', () => {
     class GetUserBalanceRepositoryStub {
         async execute() {
             return userBalance
@@ -24,11 +24,15 @@ describe('GetUserBalanceUserCase', () => {
             getUserByIdRepository,
         )
 
-        return { sut, getUserBalanceRepository, getUserByIdRepository }
+        return {
+            sut,
+            getUserBalanceRepository,
+            getUserByIdRepository,
+        }
     }
 
-    const from = '2025-01-01'
-    const to = '2025-01-01'
+    const from = '2024-01-01'
+    const to = '2024-12-31'
 
     it('should get user balance successfully', async () => {
         // arrange
@@ -50,50 +54,56 @@ describe('GetUserBalanceUserCase', () => {
         const userId = faker.string.uuid()
 
         // act
-        const promisse = sut.execute(userId, from, to)
+        const promise = sut.execute(userId, from, to)
 
         // assert
-        await expect(promisse).rejects.toThrow(new UserNotFoundError(userId))
+        await expect(promise).rejects.toThrow(new UserNotFoundError(userId))
     })
 
     it('should call GetUserByIdRepository with correct params', async () => {
         // arrange
         const { sut, getUserByIdRepository } = makeSut()
         const userId = faker.string.uuid()
-        const spy = import.meta.jest.spyOn(getUserByIdRepository, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            getUserByIdRepository,
+            'execute',
+        )
 
         // act
         await sut.execute(userId, from, to)
 
         // assert
-        expect(spy).toHaveBeenCalledWith(userId)
+        expect(executeSpy).toHaveBeenCalledWith(userId)
     })
 
     it('should call GetUserBalanceRepository with correct params', async () => {
         // arrange
         const { sut, getUserBalanceRepository } = makeSut()
         const userId = faker.string.uuid()
-        const spy = import.meta.jest.spyOn(getUserBalanceRepository, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            getUserBalanceRepository,
+            'execute',
+        )
 
         // act
         await sut.execute(userId, from, to)
 
         // assert
-        expect(spy).toHaveBeenCalledWith(userId, from, to)
+        expect(executeSpy).toHaveBeenCalledWith(userId, from, to)
     })
 
-    it('should throw if GetUserById throws', async () => {
+    it('should throw if GetUserByIdRepository throws', async () => {
         // arrange
         const { sut, getUserByIdRepository } = makeSut()
         import.meta.jest
             .spyOn(getUserByIdRepository, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), from, to)
+        const promise = sut.execute(faker.string.uuid(), from, to)
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 
     it('should throw if GetUserBalanceRepository throws', async () => {
@@ -101,12 +111,12 @@ describe('GetUserBalanceUserCase', () => {
         const { sut, getUserBalanceRepository } = makeSut()
         import.meta.jest
             .spyOn(getUserBalanceRepository, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const promisse = sut.execute(faker.string.uuid(), from, to)
+        const promise = sut.execute(faker.string.uuid(), from, to)
 
         // assert
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

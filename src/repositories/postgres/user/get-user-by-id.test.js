@@ -1,10 +1,10 @@
-import { prisma } from '../../../../prisma/prisma'
-import { user as fakerUser } from '../../../tests'
+import { prisma } from '../../../../prisma/prisma.js'
+import { user as fakeUser } from '../../../tests'
 import { PostgresGetUserByIdRepository } from './get-user-by-id'
 
 describe('PostgresGetUserByIdRepository', () => {
     it('should get user by id on db', async () => {
-        const user = await prisma.user.create({ data: fakerUser })
+        const user = await prisma.user.create({ data: fakeUser })
 
         const sut = new PostgresGetUserByIdRepository()
 
@@ -18,24 +18,23 @@ describe('PostgresGetUserByIdRepository', () => {
 
         const prismaSpy = import.meta.jest.spyOn(prisma.user, 'findUnique')
 
-        await sut.execute(fakerUser.id)
+        await sut.execute(fakeUser.id)
 
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
-                id: fakerUser.id,
+                id: fakeUser.id,
             },
         })
     })
 
     it('should throw if Prisma throws', async () => {
         const sut = new PostgresGetUserByIdRepository()
-
         import.meta.jest
             .spyOn(prisma.user, 'findUnique')
             .mockRejectedValueOnce(new Error())
 
-        const promisse = sut.execute(fakerUser.id)
+        const promise = sut.execute(fakeUser.email)
 
-        await expect(promisse).rejects.toThrow()
+        await expect(promise).rejects.toThrow()
     })
 })

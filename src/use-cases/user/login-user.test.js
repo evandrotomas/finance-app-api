@@ -1,6 +1,6 @@
 import { LoginUserUseCase } from './login-user'
-import { user } from '../../tests/index.js'
-import { InvalidPasswordError, UserNotFoundError } from '../../errors'
+import { user } from '../../tests/fixtures/user.js'
+import { InvalidPasswordError, UserNotFoundError } from '../../errors/user.js'
 
 describe('LoginUserUseCase', () => {
     class GetUserByEmailRepositoryStub {
@@ -8,13 +8,11 @@ describe('LoginUserUseCase', () => {
             return user
         }
     }
-
     class PasswordComparatorAdapterStub {
         async execute() {
             return true
         }
     }
-
     class TokensGeneratorAdapterStub {
         execute() {
             return {
@@ -25,51 +23,41 @@ describe('LoginUserUseCase', () => {
     }
 
     const makeSut = () => {
-        const getUserByEmailRepository = new GetUserByEmailRepositoryStub()
-        const passwordComparatorAdapter = new PasswordComparatorAdapterStub()
-        const tokensGeneratorAdapter = new TokensGeneratorAdapterStub()
+        const getUserByEmailRepositoryStub = new GetUserByEmailRepositoryStub()
+        const passwordComparatorAdapterStub =
+            new PasswordComparatorAdapterStub()
+        const tokensGeneratorAdapterStub = new TokensGeneratorAdapterStub()
         const sut = new LoginUserUseCase(
-            getUserByEmailRepository,
-            passwordComparatorAdapter,
-            tokensGeneratorAdapter,
+            getUserByEmailRepositoryStub,
+            passwordComparatorAdapterStub,
+            tokensGeneratorAdapterStub,
         )
-
         return {
             sut,
-            getUserByEmailRepository,
-            passwordComparatorAdapter,
-            tokensGeneratorAdapter,
+            getUserByEmailRepositoryStub,
+            passwordComparatorAdapterStub,
+            tokensGeneratorAdapterStub,
         }
     }
-
     it('should throw UserNotFoundError if user is not found', async () => {
-        const { sut, getUserByEmailRepository } = makeSut()
+        const { sut, getUserByEmailRepositoryStub } = makeSut()
         import.meta.jest
-            .spyOn(getUserByEmailRepository, 'execute')
+            .spyOn(getUserByEmailRepositoryStub, 'execute')
             .mockResolvedValueOnce(null)
-
         const promise = sut.execute('any_email', 'any_password')
-
         await expect(promise).rejects.toThrow(new UserNotFoundError())
     })
-
     it('should throw InvalidPasswordError if password is invalid', async () => {
-        const { sut, passwordComparatorAdapter } = makeSut()
-
+        const { sut, passwordComparatorAdapterStub } = makeSut()
         import.meta.jest
-            .spyOn(passwordComparatorAdapter, 'execute')
+            .spyOn(passwordComparatorAdapterStub, 'execute')
             .mockReturnValue(false)
-
         const promise = sut.execute('any_email', 'any_password')
-
         await expect(promise).rejects.toThrow(new InvalidPasswordError())
     })
-
     it('should return user with tokens', async () => {
         const { sut } = makeSut()
-
         const result = await sut.execute('any_email', 'any_password')
-
         expect(result.tokens.accessToken).toBeDefined()
     })
 })

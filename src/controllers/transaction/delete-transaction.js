@@ -1,3 +1,4 @@
+import { TransactionNotFoundError } from '../../errors/transaction.js'
 import {
     checkIfIdIsValid,
     invalidIdResponse,
@@ -6,11 +7,9 @@ import {
     transactionNotFoundResponse,
 } from '../helpers/index.js'
 
-import { TransactionNotFoundError } from '../../errors/index.js'
-
 export class DeleteTransactionController {
-    constructor(deleteTransactionUserCase) {
-        this.deleteTransactionUserCase = deleteTransactionUserCase
+    constructor(deleteTransactionUseCase) {
+        this.deleteTransactionUseCase = deleteTransactionUseCase
     }
 
     async execute(httpRequest) {
@@ -25,17 +24,18 @@ export class DeleteTransactionController {
                 return invalidIdResponse()
             }
 
-            const deleteTransaction =
-                await this.deleteTransactionUserCase.execute(
+            const deletedTransaction =
+                await this.deleteTransactionUseCase.execute(
                     transactionId,
                     userId,
                 )
 
-            return ok(deleteTransaction)
+            return ok(deletedTransaction)
         } catch (error) {
             if (error instanceof TransactionNotFoundError) {
                 return transactionNotFoundResponse()
             }
+
             console.error(error)
 
             return serverError()

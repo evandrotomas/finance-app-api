@@ -1,57 +1,54 @@
-import { faker } from '@faker-js/faker'
-import { DeleteTransactionController } from './delete-transaction'
+import { TransactionNotFoundError } from '../../errors'
 import { transaction } from '../../tests'
-import { TransactionNotFoundError } from '../../errors/index.js'
+import { DeleteTransactionController } from './delete-transaction'
+import { faker } from '@faker-js/faker'
 
-describe('DeleteTransactionController', () => {
-    class DeleteTransactionControllerStub {
+describe('Delete Transaction Controller', () => {
+    class DeleteTransactionUseCaseStub {
         async execute() {
             return transaction
         }
     }
 
     const makeSut = () => {
-        const deleteTransactionUseCase = new DeleteTransactionControllerStub()
+        const deleteTransactionUseCase = new DeleteTransactionUseCaseStub()
         const sut = new DeleteTransactionController(deleteTransactionUseCase)
 
         return { sut, deleteTransactionUseCase }
     }
-
-    const httpRequest = {
-        params: {
-            transactionId: faker.string.uuid(),
-            user_id: faker.string.uuid(),
-        },
-    }
-
-    it('should returns 200 when a transaction is deleted successfully', async () => {
+    it('should return 200 when deleting a transaction successfully', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(httpRequest)
-
-        // assert
-        expect(result.statusCode).toBe(200)
-    })
-
-    it('should returns 400 when transactionId is invalid', async () => {
-        // arrange
-        const { sut } = makeSut()
-
-        // act
-        const result = await sut.execute({
+        const response = await sut.execute({
             params: {
-                transactionId: '123',
+                transactionId: faker.string.uuid(),
                 user_id: faker.string.uuid(),
             },
         })
 
         // assert
-        expect(result.statusCode).toBe(400)
+        expect(response.statusCode).toBe(200)
     })
 
-    it('should returns 404 when transaction is not found', async () => {
+    it('should return 400 when id is invalid', async () => {
+        // arrange
+        const { sut } = makeSut()
+
+        // act
+        const response = await sut.execute({
+            params: {
+                transactionId: 'invalid_id',
+                user_id: faker.string.uuid(),
+            },
+        })
+
+        // assert
+        expect(response.statusCode).toBe(400)
+    })
+
+    it('should return 404 when transaction is not found', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()
         import.meta.jest
@@ -59,13 +56,18 @@ describe('DeleteTransactionController', () => {
             .mockRejectedValueOnce(new TransactionNotFoundError())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute({
+            params: {
+                transactionId: faker.string.uuid(),
+                user_id: faker.string.uuid(),
+            },
+        })
 
         // assert
-        expect(result.statusCode).toBe(404)
+        expect(response.statusCode).toBe(404)
     })
 
-    it('should returns 500 when DeleteTransacrionUseCase throws', async () => {
+    it('should return 500 when DeleteTransactionUseCase throws', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()
         import.meta.jest
@@ -73,12 +75,16 @@ describe('DeleteTransactionController', () => {
             .mockRejectedValueOnce(new Error())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const response = await sut.execute({
+            params: {
+                transactionId: faker.string.uuid(),
+                user_id: faker.string.uuid(),
+            },
+        })
 
         // assert
-        expect(result.statusCode).toBe(500)
+        expect(response.statusCode).toBe(500)
     })
-
     it('should call DeleteTransactionUseCase with correct params', async () => {
         // arrange
         const { sut, deleteTransactionUseCase } = makeSut()

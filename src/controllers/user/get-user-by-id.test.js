@@ -16,29 +16,31 @@ describe('GetUserByIdController', () => {
         return { sut, getUserByIdUseCase }
     }
 
-    const httpRequest = {
-        params: {
-            userId: faker.string.uuid(),
-        },
+    const baseHttpRequest = {
+        params: { userId: faker.string.uuid() },
     }
 
-    it('should return 200 if a user is foundS', async () => {
+    it('should return 200 if a user is found', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute(baseHttpRequest)
 
         // assert
         expect(result.statusCode).toBe(200)
     })
 
-    it('should return 400 if userId is invalid', async () => {
+    it('should return 400 if an invalid id is provided', async () => {
         // arrange
         const { sut } = makeSut()
 
         // act
-        const result = await sut.execute({ params: { userId: 'invalid_id' } })
+        const result = await sut.execute({
+            params: {
+                userId: 'invalid_id',
+            },
+        })
 
         // assert
         expect(result.statusCode).toBe(400)
@@ -52,35 +54,35 @@ describe('GetUserByIdController', () => {
             .mockResolvedValue(null)
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute(baseHttpRequest)
 
         // assert
         expect(result.statusCode).toBe(404)
     })
 
-    it('should return 500 if GetUserByIdController throws a error', async () => {
+    it('should return 500 if GetUserByIdUseCase throws an error', async () => {
         // arrange
         const { sut, getUserByIdUseCase } = makeSut()
         import.meta.jest
             .spyOn(getUserByIdUseCase, 'execute')
-            .mockRejectedValueOnce(new Error())
+            .mockRejectedValue(new Error())
 
         // act
-        const result = await sut.execute(httpRequest)
+        const result = await sut.execute(baseHttpRequest)
 
         // assert
         expect(result.statusCode).toBe(500)
     })
 
-    it('should call GetUserByIdController witnh corrects params', async () => {
+    it('should call GetUserByIdUseCase with correct params', async () => {
         // arrange
         const { sut, getUserByIdUseCase } = makeSut()
         const executeSpy = import.meta.jest.spyOn(getUserByIdUseCase, 'execute')
 
         // act
-        await sut.execute(httpRequest)
+        await sut.execute(baseHttpRequest)
 
         // assert
-        expect(executeSpy).toHaveBeenCalledWith(httpRequest.params.userId)
+        expect(executeSpy).toHaveBeenCalledWith(baseHttpRequest.params.userId)
     })
 })

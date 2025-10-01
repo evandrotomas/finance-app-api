@@ -1,22 +1,21 @@
 import { ZodError } from 'zod'
 import { updateTransactionSchema } from '../../schemas/transaction.js'
 import {
-    badRequest,
     checkIfIdIsValid,
-    forbidden,
     invalidIdResponse,
-    ok,
     serverError,
+    ok,
+    badRequest,
     transactionNotFoundResponse,
+    forbidden,
 } from '../helpers/index.js'
 import { TransactionNotFoundError } from '../../errors/transaction.js'
 import { ForbiddenError } from '../../errors/user.js'
 
-export class UpdatetransactionController {
+export class UpdateTransactionController {
     constructor(updateTransactionUseCase) {
         this.updateTransactionUseCase = updateTransactionUseCase
     }
-
     async execute(httpRequest) {
         try {
             const idIsValid = checkIfIdIsValid(httpRequest.params.transactionId)
@@ -38,7 +37,7 @@ export class UpdatetransactionController {
         } catch (error) {
             if (error instanceof ZodError) {
                 return badRequest({
-                    message: error.issues[0].message,
+                    message: error.errors[0].message,
                 })
             }
 

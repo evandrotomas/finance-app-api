@@ -1,4 +1,4 @@
-import { ZodError } from 'zod'
+import { UserNotFoundError } from '../../errors/user.js'
 import { createTransactionSchema } from '../../schemas/transaction.js'
 import {
     badRequest,
@@ -6,7 +6,7 @@ import {
     serverError,
     userNotFoundResponse,
 } from '../helpers/index.js'
-import { UserNotFoundError } from '../../errors/user.js'
+import { ZodError } from 'zod'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -25,7 +25,9 @@ export class CreateTransactionController {
             return created(transaction)
         } catch (error) {
             if (error instanceof ZodError) {
-                return badRequest({ message: error.issues[0].message })
+                return badRequest({
+                    message: error.errors[0].message,
+                })
             }
 
             if (error instanceof UserNotFoundError) {
@@ -33,9 +35,7 @@ export class CreateTransactionController {
             }
 
             console.error(error)
-            return serverError({
-                message: 'An error occurred while creating the transaction.',
-            })
+            return serverError()
         }
     }
 }
